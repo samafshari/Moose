@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Plugin.BLE" Version="2.1.1" />
+  </ItemGroup>
+
+  <Import Project="..\Moose.ELM.Shared\Moose.ELM.Shared.projitems" Label="Shared" />
+
+</Project>

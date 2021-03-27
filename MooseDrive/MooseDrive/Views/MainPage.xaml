@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rf:ContentPage2
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:MooseDrive.ViewModels"
+    xmlns:rf="clr-namespace:RedCorners.Forms;assembly=RedCorners.Forms"
+    xmlns:local="clr-namespace:MooseDrive.Views"
+    mc:Ignorable="d"
+    x:Class="MooseDrive.Views.MainPage">
+    <ContentPage.BindingContext>
+        <vm:MainViewModel />
+    </ContentPage.BindingContext>
+    <rf:TitledGroup
+        HasButton="False"
+        Title="Moose Drive Setup">
+        <rf:TitledGroup.ToolBar>
+            <StackLayout Margin="0,10" Orientation="Horizontal">
+                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="White" />
+                <Button Text="Refresh" Command="{Binding RefreshCommand}" />
+            </StackLayout>
+        </rf:TitledGroup.ToolBar>
+        
+        <Grid>
+            <ListView
+                ItemsSource="{Binding Items}"
+                RowHeight="50">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Spacing="0" Padding="10,0">
+                                <Label VerticalOptions="Center" Text="{Binding Name}" />
+                                <Label VerticalOptions="Center" Text="{Binding Id}" Opacity="0.5" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </rf:TitledGroup>
+</rf:ContentPage2>
