@@ -5,6 +5,10 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Analytics;
+
 namespace MooseDrive.iOS
 {
     // The UIApplicationDelegate for the application. This class is responsible for launching the 
@@ -22,6 +26,9 @@ namespace MooseDrive.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            AppCenter.Start("4cc9a2bd-065c-432d-842f-4bf3fffede3a",
+                      typeof(Analytics), typeof(Crashes));
+            
             global::Xamarin.Forms.Forms.Init();
             Xamarin.Forms.FormsMaterial.Init();
             LoadApplication(new App());

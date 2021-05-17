@@ -25,14 +25,25 @@
         <Grid>
             <ListView
                 ItemsSource="{Binding Items}"
-                RowHeight="60">
+                RowHeight="60"
+                SelectionMode="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Spacing="0" Padding="10,0" VerticalOptions="Center">
-                                <Label VerticalOptions="Center" Text="{Binding Name}" />
-                                <Label VerticalOptions="Center" Text="{Binding Address}" Opacity="0.5" />
-                            </StackLayout>
+                            <Grid>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SelectCommand}" />
+                                </Grid.GestureRecognizers>
+                                <StackLayout 
+                                    Spacing="0" 
+                                    Padding="10,0" 
+                                    VerticalOptions="Center"
+                                    InputTransparent="True"
+                                    CascadeInputTransparent="True">
+                                    <Label Text="{Binding Name}" />
+                                    <Label Text="{Binding Address}" />
+                                </StackLayout>
+                            </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>

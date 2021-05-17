@@ -26,11 +26,24 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\BLEDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IELMService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Implementations\ELMService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\CharacteristicViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\DeviceInfoViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\DeviceViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MainViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ServiceViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\DeviceInfoPage.xaml.cs">
+      <DependentUpon>DeviceInfoPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\MainPage.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\DeviceInfoPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -21,5 +21,6 @@ namespace MooseDrive.Services
         Task<bool> IsBLEAvailableAsync();
         Task StartScanningAsync();
         Task ConnectAsync(IDevice device);
+        Task DisconnectAsync();
     }
 }

@@ -95,12 +95,27 @@ namespace MooseDrive.Services.Implementations
         {
             try
             {
-                await ble.Adapter.ConnectToDeviceAsync(device);
                 SubscribeAdapterEvents();
+                await ble.Adapter.ConnectToDeviceAsync(device);
             }
             catch 
             {
                 // ... could not connect to device
+                throw;
+            }
+        }
+
+        public async Task DisconnectAsync()
+        {
+            try
+            {
+                if (ConnectedDevice == null) return;
+                await ble.Adapter.DisconnectDeviceAsync(ConnectedDevice);
+                UnsubscribeAdapterEvents();
+                ConnectedDevice = null;
+            }
+            catch
+            {
                 throw;
             }
         }

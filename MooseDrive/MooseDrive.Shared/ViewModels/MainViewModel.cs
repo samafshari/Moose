@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using MooseDrive.Models;
+using Xamarin.Essentials;
 
 namespace MooseDrive.ViewModels
 {
@@ -31,7 +32,11 @@ namespace MooseDrive.ViewModels
         {
             Items = ELMService.DiscoveredDevices
                 //.Where(x => x.Name.HasValue())
-                .Select(x => new DeviceViewModel(new BLEDevice(x)))
+                .OrderBy(x => string.IsNullOrWhiteSpace(x.Name))
+                .Select(x => new DeviceViewModel(new BLEDevice(x))
+                {
+                    SelectAction = SelectDevice
+                })
                 .ToList();
 
             UpdateProperties();
@@ -48,7 +53,11 @@ namespace MooseDrive.ViewModels
             base.Refresh();
             if (!await ELMService.RequestPermissionsAsync())
             {
-                App.Instance.DisplayAlert("Error", "Please grant the required permissions and try again.", "OK");
+                var ask = await App.Instance.DisplayAlertAsync("Error", "Please grant the required permissions and try again.", "Settings", "Dismiss");
+                if (ask)
+                {
+                    AppInfo.ShowSettingsUI();
+                }
                 return;
             }
             _ = Task.Run(FetchAsync);
@@ -65,6 +74,14 @@ namespace MooseDrive.ViewModels
             Status = TaskStatuses.Busy;
             await ELMService.StartScanningAsync();
             Status = TaskStatuses.Success;
+        }
+
+        async void SelectDevice(DeviceViewModel device)
+        {
+            await App.Instance.ShowModalPageAsync(new Views.DeviceInfoPage
+            {
+                BindingContext = new DeviceInfoViewModel(device.Device)
+            });
         }
     }
 }

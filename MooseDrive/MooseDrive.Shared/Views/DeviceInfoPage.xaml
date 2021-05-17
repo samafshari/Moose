@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rf:ContentPage2
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:rf="clr-namespace:RedCorners.Forms;assembly=RedCorners.Forms"
+    xmlns:vm="clr-namespace:MooseDrive.ViewModels"
+    xmlns:local="clr-namespace:MooseDrive.Views"
+    mc:Ignorable="d"
+    x:Class="MooseDrive.Views.DeviceInfoPage">
+    <d:ContentPage.BindingContext>
+        <vm:DeviceInfoViewModel />
+    </d:ContentPage.BindingContext>
+
+    <rf:TitledContentView 
+        Title="{Binding Name}" 
+        BackCommand="{Binding GoBackCommand}" 
+        IsBackButtonVisible="True">
+        <rf:TitledContentView.ToolBar>
+            <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+                <Button Text="Refresh" Command="{Binding RefreshCommand}" />
+            </StackLayout>
+        </rf:TitledContentView.ToolBar>
+
+        <Grid>
+            <CollectionView
+                ItemsSource="{Binding Services}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Margin="0,0,0,30">
+                            <Label FontAttributes="Bold" Text="{Binding Id, StringFormat='Id: {0}'}" />
+                            <Label Text="{Binding Name, StringFormat='Name: {0}'}" />
+                            <Label Text="{Binding IsSupported, StringFormat='IsSupported: {0}'}" />
+                            <Label Text="Characteristics" />
+                            <StackLayout 
+                                BindableLayout.ItemsSource="{Binding Characteristics}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout>
+                                            <Label FontAttributes="Bold" Text="{Binding Characteristic.Id, StringFormat='Id: {0}'}" />
+                                            <Label Text="{Binding Characteristic.CanRead, StringFormat='CanRead: {0}'}" />
+                                            <Label Text="{Binding Characteristic.CanWrite, StringFormat='CanWrite: {0}'}" />
+                                            <Label Text="{Binding Characteristic.CanUpdate, StringFormat='CanUpdate: {0}'}" />
+                                            <Label Text="{Binding Characteristic.Name, StringFormat='Name: {0}'}" />
+                                            <Label Text="{Binding Characteristic.Uuid, StringFormat='Uuid: {0}'}" />
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </rf:TitledContentView>
+</rf:ContentPage2>
