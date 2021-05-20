@@ -13,9 +13,9 @@ using Xamarin.Forms.Xaml;
 namespace MooseDrive.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DeviceInfoPage
+    public partial class TerminalPage
     {
-        public DeviceInfoPage()
+        public TerminalPage()
         {
             InitializeComponent();
         }

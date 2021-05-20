@@ -1,4 +1,5 @@
 ﻿using RedCorners.Forms;
+using RedCorners.Forms.Systems;
 
 using System;
 
@@ -15,6 +16,13 @@ namespace MooseDrive
         {
             InitializeComponent();
             base.InitializeSystems();
+
+            UserAppTheme = OSAppTheme.Light;
+
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                NotchSystem.Instance.OverridePadding = new Thickness(0, 0, 0, 0);
+            }
         }
     }
 }

@@ -11,16 +11,11 @@ namespace MooseDrive.Services
     public interface IELMService
     {
         event EventHandler<bool> BluetoothStateChanged;
-        event EventHandler<IDevice> DeviceConnected;
-        event EventHandler<IDevice> DeviceDisconnected;
 
         ObservableCollection<IDevice> DiscoveredDevices { get; }
-        IDevice ConnectedDevice { get; }
 
         Task<bool> RequestPermissionsAsync();
         Task<bool> IsBLEAvailableAsync();
         Task StartScanningAsync();
-        Task ConnectAsync(IDevice device);
-        Task DisconnectAsync();
     }
 }

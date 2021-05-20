@@ -13,24 +13,29 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using MooseDrive.Models;
 using Xamarin.Essentials;
+using Moose.ELM;
 
 namespace MooseDrive.ViewModels
 {
     public class MainViewModel : BindableModel
     {
-        public IELMService ELMService { get; private set; }
+        readonly IELMService elmService;
+        readonly IErrorService errorService;
+
         public List<DeviceViewModel> Items { get; set; } = new List<DeviceViewModel>();
 
         public MainViewModel()
         {
             Status = TaskStatuses.Success;
-            ELMService = DependencyService.Get<IELMService>();
-            ELMService.DiscoveredDevices.CollectionChanged += DiscoveredDevices_CollectionChanged;
+            elmService = DependencyService.Get<IELMService>();
+            elmService.DiscoveredDevices.CollectionChanged += DiscoveredDevices_CollectionChanged;
+
+            errorService = DependencyService.Get<IErrorService>();
         }
 
         private void DiscoveredDevices_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            Items = ELMService.DiscoveredDevices
+            Items = elmService.DiscoveredDevices
                 //.Where(x => x.Name.HasValue())
                 .OrderBy(x => string.IsNullOrWhiteSpace(x.Name))
                 .Select(x => new DeviceViewModel(new BLEDevice(x))
@@ -51,7 +56,7 @@ namespace MooseDrive.ViewModels
         public override async void Refresh()
         {
             base.Refresh();
-            if (!await ELMService.RequestPermissionsAsync())
+            if (!await elmService.RequestPermissionsAsync())
             {
                 var ask = await App.Instance.DisplayAlertAsync("Error", "Please grant the required permissions and try again.", "Settings", "Dismiss");
                 if (ask)
@@ -65,22 +70,29 @@ namespace MooseDrive.ViewModels
 
         async Task FetchAsync()
         {
-            if (!await ELMService.IsBLEAvailableAsync())
+            if (!await elmService.IsBLEAvailableAsync())
             {
                 App.Instance.DisplayAlert("Error", "Bluetooth is not available. Please check if it's on.", "OK");
                 return;
             }
 
             Status = TaskStatuses.Busy;
-            await ELMService.StartScanningAsync();
+            await elmService.StartScanningAsync();
             Status = TaskStatuses.Success;
         }
 
         async void SelectDevice(DeviceViewModel device)
         {
-            await App.Instance.ShowModalPageAsync(new Views.DeviceInfoPage
+            var terminal = await ELMTerminal.FromDeviceAsync(device?.Device?.Device);
+            if (terminal == null)
             {
-                BindingContext = new DeviceInfoViewModel(device.Device)
+                errorService.AlertError("Device is incompatible.");
+                return;
+            }
+
+            await App.Instance.ShowModalPageAsync(new Views.TerminalPage
+            {
+                BindingContext = new TerminalViewModel(terminal)
             });
         }
     }

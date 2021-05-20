@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rf:ContentPage2
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:rf="clr-namespace:RedCorners.Forms;assembly=RedCorners.Forms"
+    xmlns:vm="clr-namespace:MooseDrive.ViewModels"
+    xmlns:local="clr-namespace:MooseDrive.Views"
+    mc:Ignorable="d"
+    x:Class="MooseDrive.Views.TerminalPage">
+    <ContentPage.BindingContext>
+        <vm:TerminalViewModel />
+    </ContentPage.BindingContext>
+
+    <rf:TitledContentView 
+        Title="{Binding Title}" 
+        BackCommand="{Binding GoBackCommand}" 
+        IsBackButtonVisible="True">
+        <rf:TitledContentView.ToolBar>
+            <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+                <Button Text="Send" Command="{Binding SendCommand}" />
+            </StackLayout>
+        </rf:TitledContentView.ToolBar>
+
+        <Grid RowDefinitions="Auto, *">
+            <Entry Grid.Row="0" Text="{Binding Command}" />
+            <ScrollView Grid.Row="1">
+                <Label Text="{Binding Log}" />
+            </ScrollView>
+        </Grid>
+    </rf:TitledContentView>
+</rf:ContentPage2>
