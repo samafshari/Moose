@@ -24,7 +24,7 @@
         </rf:TitledContentView.ToolBar>
 
         <Grid RowDefinitions="Auto, *">
-            <Entry Grid.Row="0" Text="{Binding Command}" />
+            <Entry Grid.Row="0" Text="{Binding Command}" ReturnCommand="{Binding SendCommand}" />
             <ScrollView Grid.Row="1">
                 <Label Text="{Binding Log}" />
             </ScrollView>

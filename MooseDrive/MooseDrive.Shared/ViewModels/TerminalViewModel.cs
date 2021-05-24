@@ -2,6 +2,8 @@
 
 using MooseDrive.Models;
 
+using Plugin.BLE.Abstractions.Contracts;
+
 using RedCorners;
 using RedCorners.Forms;
 using RedCorners.Models;
@@ -17,6 +19,8 @@ namespace MooseDrive.ViewModels
 {
     public class TerminalViewModel : BindableModel
     {
+        int i = 0;
+
         [NoUpdate]
         public ELMTerminal Terminal { get; private set; }
 
@@ -31,6 +35,7 @@ namespace MooseDrive.ViewModels
         public TerminalViewModel(ELMTerminal terminal)
         {
             this.Terminal = terminal;
+            Terminal.OnMessage += Terminal_OnMessage;
             Device = new DeviceViewModel(new BLEDevice(terminal.Device));
             Title = Device.Name;
             Status = TaskStatuses.Success;
@@ -55,14 +60,33 @@ namespace MooseDrive.ViewModels
             Log = message + "\n" + Log;
         }
 
+        public override void OnStop()
+        {
+            Terminal.OnMessage -= Terminal_OnMessage;
+            base.OnStop();
+        }
+
         public Command SendCommand => new Command(async () =>
         {
             if (string.IsNullOrWhiteSpace(Command)) return;
-            AddLog($"W> {Command}");
-            var response = await Terminal.WriteAsync(Command);
-            if (response == null) AddLog("R> NULL");
-            else AddLog($"R> {response}");
+            AddLog($"[{i++}]W> {Command}");
+            var response = await Terminal.WriteAsync($"{Command}\r");
+            if (!response) AddLog($"[{i++}]WRITE ERROR");
             Command = null;
         });
+
+        private void Terminal_OnMessage(object sender, string e)
+        {
+            if (string.IsNullOrWhiteSpace(e))
+            {
+                i++;
+                return;
+            }
+
+            if (sender is ICharacteristic characteristic)
+            {
+                AddLog($"[{i++}]R{characteristic.Uuid}> {e}\n");
+            }
+        }
     }
 }

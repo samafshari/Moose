@@ -18,23 +18,29 @@ namespace Moose.ELM
         public const string CharacteristicUuid = "BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F";
 
         public IDevice Device { get; private set; }
-        public IService Service { get; private set; }
-        public ICharacteristic Characteristic { get; private set; }
+        public IService WriteService { get; private set; }
+        public ICharacteristic WriteCharacteristic { get; private set; }
+        public List<ICharacteristic> Characteristics { get; private set; }
+        
+        public event EventHandler<string> OnMessage;
+        public event EventHandler<string> OnMessageFromWriteCharacteristic;
 
         ELMTerminal(IDevice device, IService service, ICharacteristic characteristic)
         {
             ble = CrossBluetoothLE.Current;
             this.Device = device;
-            this.Service = service;
-            this.Characteristic = characteristic;
-            Characteristic.ValueUpdated += Characteristic_ValueUpdated;
+            this.WriteService = service;
+            this.WriteCharacteristic = characteristic;
+            WriteCharacteristic.ValueUpdated += Characteristic_ValueUpdated;
             SubscribeAdapterEvents();
-            Task.Run(Characteristic.StartUpdatesAsync);
         }
 
         public async Task DisconnectAsync()
         {
-            await Characteristic.StopUpdatesAsync();
+            foreach (var characteristic in Characteristics.Where(x => x.CanUpdate))
+            {
+                await characteristic.StopUpdatesAsync();
+            }
             UnsubscribeAdapterEvents();
             await ble.Adapter.DisconnectDeviceAsync(Device);
         }
@@ -79,14 +85,16 @@ namespace Moose.ELM
                 await ble.Adapter.ConnectToDeviceAsync(device);
 
                 var services = await device.GetServicesAsync();
-                var service = services.FirstOrDefault(x => x.Id.ToString().ToUpper() == ServiceId);
-                if (service != null)
+                var writeService = services.FirstOrDefault(x => x.Id.ToString().ToUpper() == ServiceId);
+                if (writeService != null)
                 {
-                    var characteristics = await service.GetCharacteristicsAsync();
-                    var characteristic = characteristics?.FirstOrDefault(x => x.Uuid.ToUpper() == CharacteristicUuid);
-                    if (characteristic != null)
+                    var characteristics = await writeService.GetCharacteristicsAsync();
+                    var writeCharacteristic = characteristics?.FirstOrDefault(x => x.Uuid.ToUpper() == CharacteristicUuid);
+                    if (writeCharacteristic != null)
                     {
-                        return new ELMTerminal(device, service, characteristic);
+                        var terminal = new ELMTerminal(device, writeService, writeCharacteristic);
+                        await terminal.InitializeAsync();
+                        return terminal;
                     }
                 }
 
@@ -99,30 +107,70 @@ namespace Moose.ELM
             }
         }
 
-        public async Task<string> WriteAsync(string message)
+        async Task InitializeAsync()
         {
-            var bytes = Encoding.ASCII.GetBytes(message);
-            Console.WriteLine($"Writing: {message}");
-            await Characteristic.WriteAsync(bytes);
-            return await ReadAsync();
+            Characteristics = new List<ICharacteristic>();
+            var services = await Device.GetServicesAsync();
+            foreach (var service in services)
+            {
+                var characteristics = await service.GetCharacteristicsAsync();
+                foreach (var characteristic in characteristics)
+                {
+                    Console.WriteLine(
+                        $"Service: {service.Id}, {service.IsPrimary}; " +
+                        $"Characteristic: {characteristic.Uuid}; " +
+                        $"{characteristic.CanRead}, {characteristic.CanUpdate}, {characteristic.CanWrite}; " +
+                        $"{characteristic.Properties}, {characteristic.WriteType}");
+                    characteristic.ValueUpdated += Characteristic_ValueUpdated;
+                    if (characteristic.CanUpdate)
+                        await characteristic.StartUpdatesAsync();
+                    Characteristics.Add(characteristic);
+                }
+            }
         }
 
-        async Task<string> ReadAsync()
+        public async Task<bool> WriteAsync(string message)
         {
-            var bytes = await Characteristic.ReadAsync();
-            if (bytes == null)
+            var bytes = Encoding.UTF8.GetBytes(message);
+            Console.WriteLine($"Writing: {message}");
+            try
             {
-                Console.WriteLine($"Read null");
-                return null;
+                await WriteCharacteristic.WriteAsync(bytes);
+                return true;
             }
-            var message = Encoding.ASCII.GetString(bytes);
-            Console.WriteLine($"Read: {message}");
-            return message;
+            catch
+            {
+                return false;
+            }
         }
 
         private async void Characteristic_ValueUpdated(object sender, CharacteristicUpdatedEventArgs e)
         {
-            await ReadAsync();
+            await ReadAsync(e.Characteristic);
+        }
+
+        async Task<string> ReadAsync(ICharacteristic characteristic)
+        {
+            try
+            {
+                var bytes = await characteristic.ReadAsync();
+                if (bytes == null)
+                {
+                    Console.WriteLine($"[{characteristic.Uuid}] Read null");
+                    return null;
+                }
+                var message = Encoding.UTF8.GetString(bytes);
+                Console.WriteLine($"[{characteristic.Uuid}] Read: {message}");
+                OnMessage?.Invoke(characteristic, message);
+                if (characteristic == WriteCharacteristic)
+                    OnMessageFromWriteCharacteristic?.Invoke(characteristic, message);
+                return message;
+            }
+            catch
+            {
+                Console.WriteLine($"[{characteristic.Uuid}] Read Error");
+                return null;
+            }
         }
     }
 }
