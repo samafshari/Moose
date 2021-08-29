@@ -109,6 +109,9 @@ namespace Moose.ELM
 
         async Task InitializeAsync()
         {
+            //WriteCharacteristic.ValueUpdated += Characteristic_ValueUpdated;
+            //await WriteCharacteristic.StartUpdatesAsync();
+
             Characteristics = new List<ICharacteristic>();
             var services = await Device.GetServicesAsync();
             foreach (var service in services)
@@ -131,7 +134,7 @@ namespace Moose.ELM
 
         public async Task<bool> WriteAsync(string message)
         {
-            var bytes = Encoding.UTF8.GetBytes(message);
+            var bytes = Encoding.ASCII.GetBytes(message);
             Console.WriteLine($"Writing: {message}");
             try
             {
@@ -153,14 +156,14 @@ namespace Moose.ELM
         {
             try
             {
-                var bytes = await characteristic.ReadAsync();
-                if (bytes == null)
-                {
-                    Console.WriteLine($"[{characteristic.Uuid}] Read null");
-                    return null;
-                }
-                var message = Encoding.UTF8.GetString(bytes);
-                Console.WriteLine($"[{characteristic.Uuid}] Read: {message}");
+                //var bytes = await characteristic.ReadAsync();
+                //if (bytes == null)
+                //{
+                //    Console.WriteLine($"[{characteristic.Uuid}] Read null");
+                //    return null;
+                //}
+                var message = characteristic.StringValue; // Encoding.ASCII.GetString(bytes);
+                //Console.WriteLine($"[{characteristic.Uuid}] Read: {message}");
                 OnMessage?.Invoke(characteristic, message);
                 if (characteristic == WriteCharacteristic)
                     OnMessageFromWriteCharacteristic?.Invoke(characteristic, message);
@@ -171,6 +174,16 @@ namespace Moose.ELM
                 Console.WriteLine($"[{characteristic.Uuid}] Read Error");
                 return null;
             }
+        }
+
+
+        public static string ToHexString(byte[] bytes)
+        {
+            if (bytes == null) return null;
+            StringBuilder hex = new StringBuilder(bytes.Length * 2);
+            foreach (byte b in bytes)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();
         }
     }
 }

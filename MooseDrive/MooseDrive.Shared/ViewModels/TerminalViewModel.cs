@@ -52,7 +52,7 @@ namespace MooseDrive.ViewModels
         public new string Log
         {
             get => _log;
-            set => SetProperty(ref _log, value);
+            set => App.Instance.RunOnUI(() => SetProperty(ref _log, value));
         }
 
         void AddLog(string message)
