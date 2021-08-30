@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moose\Moose.csproj" />
+    <PackageReference Include="RedCorners" Version="8.0.0" />
+    <PackageReference Include="RedCorners.Components.ObjectStorage" Version="8.6.0" />
   </ItemGroup>
 
 </Project>
