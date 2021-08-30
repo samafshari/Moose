@@ -10,8 +10,6 @@ namespace Moose.Models
         public Func<byte[], Task> WriteAsyncFunc;
         public Func<string, Task> LogAsyncFunc;
 
-        public event EventHandler<Driver> OnDisconnectRequest;
-
         public virtual TimeSpan Timeout => TimeSpan.FromSeconds(10);
         public virtual TimeSpan RetryWait => TimeSpan.FromMilliseconds(10);
 

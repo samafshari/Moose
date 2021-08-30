@@ -36,13 +36,15 @@ namespace Moose.Mobile.BLE
             this.IsSupported = true;
         }
 
+
+
         public async Task SetupAsync(IService service, ICharacteristic readCharacteristic, ICharacteristic writeCharacteristic)
         {
-            if (this.readCharacteristic != null)
-                this.readCharacteristic.ValueUpdated -= ReadCharacteristic_ValueUpdated;
             this.service = service;
             this.readCharacteristic = readCharacteristic;
             this.writeCharacteristic = writeCharacteristic;
+            if (this.readCharacteristic != null)
+                this.readCharacteristic.ValueUpdated -= ReadCharacteristic_ValueUpdated;
             await SetupAsync();
         }
 
@@ -99,7 +101,6 @@ namespace Moose.Mobile.BLE
             Driver = new T();
             Driver.WriteAsyncFunc = WriteAsync;
             Driver.LogAsyncFunc = LogAsync;
-            Driver.OnDisconnectRequest += Driver_OnDisconnectRequest;
         }
 
         protected override void Update(CharacteristicUpdatedEventArgs e)

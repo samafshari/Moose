@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Moose.Mobile.BLE
 {
-    public abstract class BLEAgent<TDevice, TDriver> where TDriver : Driver, new() where TDevice : SupportedBLEDevice<TDriver>
+    public abstract class BLEAgent<TDevice, TDriver> where TDriver : Driver, new() where TDevice : SupportedBLEDevice<TDriver>, new()
     {
         readonly IBluetoothLE ble;
 
@@ -122,7 +122,7 @@ namespace Moose.Mobile.BLE
                         {
                             // Device is supported
                             Console.WriteLine("GGGGGGGGGGGGG");
-                            var supportedDevice = new TDevice(e.Device, service, read, write);
+                            var supportedDevice = CreateDevice(e.Device, service, read, write);
                             await supportedDevice.SetupAsync();
                             SupportedDevices.Add(supportedDevice);
                             SupportedDeviceDiscovered?.Invoke(this, supportedDevice);
@@ -168,17 +168,22 @@ namespace Moose.Mobile.BLE
             return false;
         }
 
-        public async Task DisconnectAsync(TDevice device)
+        public virtual async Task DisconnectAsync(TDevice device)
         {
             try
             {
                 await device.ReleaseAsync();
                 await ble.Adapter.DisconnectDeviceAsync(device.Device);
             }
-            catch (Exception ex)
+            catch 
             {
                 //throw ex;
             }
+        }
+
+        protected virtual TDevice CreateDevice(IDevice device, IService service, ICharacteristic readCharacteristic, ICharacteristic writeCharacteristic)
+        {
+            return null;
         }
     }
 }
