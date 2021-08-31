@@ -13,6 +13,11 @@ namespace Moose.Models
         public virtual TimeSpan Timeout => TimeSpan.FromSeconds(10);
         public virtual TimeSpan RetryWait => TimeSpan.FromMilliseconds(10);
 
+        public virtual Task SetupAsync()
+        {
+            return Task.CompletedTask;
+        }
+
         public virtual void InjectMessage(byte[] bytes)
         {
         }
@@ -51,6 +56,17 @@ namespace Moose.Models
                 }
             }
             return true;
+        }
+
+        protected virtual async Task WriteAsync(byte[] bytes)
+        {
+            await WriteAsyncFunc(bytes);
+        }
+
+        protected virtual async Task WriteAsync(string message)
+        {
+            var bytes = Encoding.ASCII.GetBytes(message);
+            await WriteAsync(bytes);
         }
     }
 }

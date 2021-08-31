@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 
 namespace Moose.Mobile.BLE
 {
-    public abstract class BLEAgent<TDevice, TDriver> where TDriver : Driver, new() where TDevice : SupportedBLEDevice<TDriver>, new()
+    public abstract class BLEAgent<TDevice, TDriver> 
+        where TDriver : Driver, new() 
+        where TDevice : SupportedBLEDevice<TDriver>
     {
-        readonly IBluetoothLE ble;
+        protected readonly IBluetoothLE ble;
 
         public string ServiceUuid { get; protected set; }
         public string ReadCharacteristicUuid { get; protected set; }
@@ -24,16 +26,16 @@ namespace Moose.Mobile.BLE
         public bool IsAvailable => ble.IsAvailable && ble.IsOn;
         public bool IsEnumerating => IsAvailable && ble.Adapter.IsScanning;
 
-        public event TypedEventHandler<BLEAgent<TDevice, TDriver>, BLEDevice> DeviceDiscovered;
+        public event EventHandler<BLEDevice> DeviceDiscovered;
 
-        public event TypedEventHandler<BLEAgent<TDevice, TDriver>, TDevice> SupportedDeviceDiscovered;
-        public event TypedEventHandler<BLEAgent<TDevice, TDriver>, TDevice> SupportedDeviceConnected;
-        public event TypedEventHandler<BLEAgent<TDevice, TDriver>, TDevice> SupportedDeviceConnectionLost;
-        public event TypedEventHandler<BLEAgent<TDevice, TDriver>, TDevice> SupportedDeviceDisconnected;
+        public event EventHandler<TDevice> SupportedDeviceDiscovered;
+        public event EventHandler<TDevice> SupportedDeviceConnected;
+        public event EventHandler<TDevice> SupportedDeviceConnectionLost;
+        public event EventHandler<TDevice> SupportedDeviceDisconnected;
 
-        public event TypedEventHandler<BLEAgent<TDevice, TDriver>, IAdapter> EnumerationStarted;
-        public event TypedEventHandler<BLEAgent<TDevice, TDriver>, IAdapter> EnumerationStopped;
-        public event TypedEventHandler<BLEAgent<TDevice, TDriver>, IAdapter> StateChanged;
+        public event EventHandler<IAdapter> EnumerationStarted;
+        public event EventHandler<IAdapter> EnumerationStopped;
+        public event EventHandler<IAdapter> StateChanged;
 
         public BLEAgent()
         {
@@ -76,23 +78,23 @@ namespace Moose.Mobile.BLE
 
         private void Adapter_DeviceDisconnected(object sender, Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs e)
         {
-            var o2device = SupportedDevices.FirstOrDefault(x => x.Id == e.Device.Id.ToString());
-            if (o2device != null)
-                SupportedDeviceDisconnected?.Invoke(this, o2device);
+            var device = SupportedDevices.FirstOrDefault(x => x.Id == e.Device.Id.ToString());
+            if (device != null)
+                SupportedDeviceDisconnected?.Invoke(this, device);
         }
 
         private void Adapter_DeviceConnectionLost(object sender, Plugin.BLE.Abstractions.EventArgs.DeviceErrorEventArgs e)
         {
-            var o2device = SupportedDevices.FirstOrDefault(x => x.Id == e.Device.Id.ToString());
-            if (o2device != null)
-                SupportedDeviceConnectionLost?.Invoke(this, o2device);
+            var device = SupportedDevices.FirstOrDefault(x => x.Id == e.Device.Id.ToString());
+            if (device != null)
+                SupportedDeviceConnectionLost?.Invoke(this, device);
         }
 
         private void Adapter_DeviceConnected(object sender, Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs e)
         {
-            var o2device = SupportedDevices.FirstOrDefault(x => x.Id == e.Device.Id.ToString());
-            if (o2device != null)
-                SupportedDeviceConnected?.Invoke(this, o2device);
+            var device = SupportedDevices.FirstOrDefault(x => x.Id == e.Device.Id.ToString());
+            if (device != null)
+                SupportedDeviceConnected?.Invoke(this, device);
         }
 
         private async void Adapter_DeviceDiscovered(object sender, Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs e)
@@ -183,7 +185,7 @@ namespace Moose.Mobile.BLE
 
         protected virtual TDevice CreateDevice(IDevice device, IService service, ICharacteristic readCharacteristic, ICharacteristic writeCharacteristic)
         {
-            return null;
+            throw new NotImplementedException("Please implement BLEAgent.CreateDevice");
         }
     }
 }

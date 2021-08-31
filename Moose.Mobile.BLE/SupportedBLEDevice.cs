@@ -18,7 +18,7 @@ namespace Moose.Mobile.BLE
 
         public IDevice Device { get; private set; }
 
-        public event TypedEventHandler<SupportedBLEDevice, string> LogPublished;
+        public event EventHandler<string> LogPublished;
 
         public bool IsReleased { get; private set; }
 
@@ -35,8 +35,6 @@ namespace Moose.Mobile.BLE
             this.writeCharacteristic = writeCharacteristic;
             this.IsSupported = true;
         }
-
-
 
         public async Task SetupAsync(IService service, ICharacteristic readCharacteristic, ICharacteristic writeCharacteristic)
         {
@@ -83,10 +81,10 @@ namespace Moose.Mobile.BLE
         }
     }
 
-    public class SupportedBLEDevice<T> : SupportedBLEDevice where T : Driver, new()
+    public class SupportedBLEDevice<TDriver> : SupportedBLEDevice where TDriver : Driver, new()
     {
-        public T Driver { get; private set; }
-        
+        public TDriver Driver { get; private set; }
+
         public SupportedBLEDevice(IDevice device,
             IService service,
             ICharacteristic readCharacteristic,
@@ -98,9 +96,10 @@ namespace Moose.Mobile.BLE
         public override async Task SetupAsync()
         {
             await base.SetupAsync();
-            Driver = new T();
+            Driver = new TDriver();
             Driver.WriteAsyncFunc = WriteAsync;
             Driver.LogAsyncFunc = LogAsync;
+            await Driver.SetupAsync();
         }
 
         protected override void Update(CharacteristicUpdatedEventArgs e)
@@ -109,19 +108,13 @@ namespace Moose.Mobile.BLE
             Driver?.InjectMessage(e.Characteristic.StringValue);
         }
 
-
-        private async void Driver_OnDisconnectRequest(object sender, Driver e)
-        {
-            await ReleaseAsync();
-        }
-
         private void ReadCharacteristic_ValueUpdated(object sender, Plugin.BLE.Abstractions.EventArgs.CharacteristicUpdatedEventArgs e)
         {
             Driver?.InjectMessage(e.Characteristic.Value);
             Driver?.InjectMessage(e.Characteristic.StringValue);
         }
 
-        async Task WriteAsync(byte[] bytes)
+        public async Task WriteAsync(byte[] bytes)
         {
             await writeCharacteristic.WriteAsync(bytes);
         }

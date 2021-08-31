@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MooseDrive", "MooseDrive\Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MooseDrive.Logger", "MooseDrive.Logger\MooseDrive.Logger.csproj", "{2A4F83E7-6DC0-4052-A39A-BCE5BC784B29}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Moose.Mobile", "Moose.Mobile", "{A829D52C-C8C1-4DD9-9117-01BDB30A906A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Moose.Mobile", "..\Moose.Mobile", "{A829D52C-C8C1-4DD9-9117-01BDB30A906A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose.Mobile.BLE", "Moose.Mobile.BLE\Moose.Mobile.BLE.csproj", "{1A49DD01-1348-4CE2-A269-73127DC9C20F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose.Mobile.BLE", "..\Moose.Mobile.BLE\Moose.Mobile.BLE.csproj", "{1A49DD01-1348-4CE2-A269-73127DC9C20F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MooseDrive.Mobile", "MooseDrive.Mobile\MooseDrive.Mobile.csproj", "{062731F6-00EE-4E74-83F8-B098EA76CB43}"
 EndProject
@@ -25,9 +25,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MooseDrive.Mobile.App.iOS",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MooseDrive.Mobile.App", "MooseDrive.Mobile.App\MooseDrive.Mobile.App\MooseDrive.Mobile.App.csproj", "{76F00F1C-1B23-409C-A3AE-7D7503DE10FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose.Mobile", "Moose.Mobile\Moose.Mobile.csproj", "{420DC959-9BBC-498F-8864-3D336EA7EEFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose.Mobile", "..\Moose.Mobile\Moose.Mobile.csproj", "{420DC959-9BBC-498F-8864-3D336EA7EEFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moose", "Moose\Moose.csproj", "{FE840772-C40A-434E-8AE1-C5829B9A9EC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose", "..\Moose\Moose.csproj", "{FE840772-C40A-434E-8AE1-C5829B9A9EC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moose.Database", "..\Moose.Database\Moose.Database.csproj", "{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +165,18 @@ Global
 		{FE840772-C40A-434E-8AE1-C5829B9A9EC9}.Release|iPhone.Build.0 = Release|Any CPU
 		{FE840772-C40A-434E-8AE1-C5829B9A9EC9}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{FE840772-C40A-434E-8AE1-C5829B9A9EC9}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Release|iPhone.Build.0 = Release|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,6 +191,7 @@ Global
 		{76F00F1C-1B23-409C-A3AE-7D7503DE10FC} = {67E366D2-C36F-4E8F-AB9D-B2557B087DA5}
 		{420DC959-9BBC-498F-8864-3D336EA7EEFB} = {A829D52C-C8C1-4DD9-9117-01BDB30A906A}
 		{FE840772-C40A-434E-8AE1-C5829B9A9EC9} = {A829D52C-C8C1-4DD9-9117-01BDB30A906A}
+		{02A16696-2BCD-4E3D-B31E-E81FB2403BC8} = {A829D52C-C8C1-4DD9-9117-01BDB30A906A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BE9807F-F4A4-4121-B4FA-A430F619ADBE}
