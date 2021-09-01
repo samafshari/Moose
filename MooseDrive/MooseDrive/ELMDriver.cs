@@ -40,9 +40,16 @@ namespace MooseDrive
         };
 
         public ELMMessage LastMessage { get; private set; }
+        bool expectingEcho = false;
 
         public override void InjectMessage(string message)
         {
+            Log(message);
+            if (expectingEcho)
+            {
+                expectingEcho = false;
+                return;
+            }
             if (LastMessage == null) return; // Actually, this should not happen. This means a response to an unknown message has arrived
             LastMessage.IsSending = false;
             if (LastMessage.ProcessResponse(message))
@@ -96,6 +103,7 @@ namespace MooseDrive
                     if (queue.TryDequeue(out var message))
                     {
                         LastMessage = message;
+                        expectingEcho = true;
                         await WriteAsync(message.Message + "\r");
                         await WaitAndCrashIfFail(() => LastMessage != null && LastMessage.IsSending);
                     }
