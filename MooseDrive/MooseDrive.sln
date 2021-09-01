@@ -11,11 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MooseDrive", "MooseDrive\Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MooseDrive.Logger", "MooseDrive.Logger\MooseDrive.Logger.csproj", "{2A4F83E7-6DC0-4052-A39A-BCE5BC784B29}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Moose.Mobile", "..\Moose.Mobile", "{A829D52C-C8C1-4DD9-9117-01BDB30A906A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Moose.Mobile", "Moose.Mobile", "{A829D52C-C8C1-4DD9-9117-01BDB30A906A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose.Mobile.BLE", "..\Moose.Mobile.BLE\Moose.Mobile.BLE.csproj", "{1A49DD01-1348-4CE2-A269-73127DC9C20F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MooseDrive.Mobile", "MooseDrive.Mobile\MooseDrive.Mobile.csproj", "{062731F6-00EE-4E74-83F8-B098EA76CB43}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{67E366D2-C36F-4E8F-AB9D-B2557B087DA5}"
 EndProject
@@ -29,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose.Mobile", "..\Moose.Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose", "..\Moose\Moose.csproj", "{FE840772-C40A-434E-8AE1-C5829B9A9EC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moose.Database", "..\Moose.Database\Moose.Database.csproj", "{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moose.Database", "..\Moose.Database\Moose.Database.csproj", "{02A16696-2BCD-4E3D-B31E-E81FB2403BC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,18 +87,6 @@ Global
 		{1A49DD01-1348-4CE2-A269-73127DC9C20F}.Release|iPhone.Build.0 = Release|Any CPU
 		{1A49DD01-1348-4CE2-A269-73127DC9C20F}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{1A49DD01-1348-4CE2-A269-73127DC9C20F}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Release|Any CPU.Build.0 = Release|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Release|iPhone.Build.0 = Release|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{062731F6-00EE-4E74-83F8-B098EA76CB43}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{BB6B32D2-700E-4ACD-97F4-E45ACAFE53E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB6B32D2-700E-4ACD-97F4-E45ACAFE53E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB6B32D2-700E-4ACD-97F4-E45ACAFE53E4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

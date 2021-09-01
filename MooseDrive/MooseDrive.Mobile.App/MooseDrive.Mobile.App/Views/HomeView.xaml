@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rf:ContentView2
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:rf="clr-namespace:RedCorners.Forms;assembly=RedCorners.Forms"
+    xmlns:rfc="clr-namespace:RedCorners.Forms.Converters;assembly=RedCorners.Forms"
+    xmlns:local="clr-namespace:MooseDrive.Mobile.App.Views"
+    xmlns:vm="clr-namespace:MooseDrive.Mobile.App.ViewModels"
+    mc:Ignorable="d"
+    x:Class="MooseDrive.Mobile.App.Views.HomeView">
+    <rf:TitledGroup 
+        HasButton="False"
+        TitleAlignment="Start">
+        <rf:TitledGroup.TitleView>
+            <Grid>
+                <Label 
+                    VerticalOptions="Center"
+                    TextColor="{StaticResource Color5}"
+                    Text="Not Connected"
+                    IsVisible="{Binding IsConnected, Converter={Static rfc:NotConverter.Instance}}" />
+                <StackLayout
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    Orientation="Horizontal">
+                    <Image
+                        Source="unplugged"
+                        WidthRequest="24"
+                        HeightRequest="24"
+                        VerticalOptions="Center"
+                        InputTransparent="True">
+                        <Image.Triggers>
+                            <DataTrigger
+                                TargetType="Image"
+                                Binding="{Binding IsConnected}"
+                                Value="True">
+                                <Setter Property="Source" Value="signal" />
+                            </DataTrigger>
+                        </Image.Triggers>
+                    </Image>
+                    <Label
+                        Text="Connect"
+                        FontAttributes="Bold"
+                        TextColor="{StaticResource Color5}"
+                        InputTransparent="True"
+                        VerticalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger
+                                TargetType="Label"
+                                Binding="{Binding IsConnected}"
+                                Value="True">
+                                <Setter Property="Text" Value="{Binding DeviceName}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding ConnectCommand}">
+                        </TapGestureRecognizer>
+                    </StackLayout.GestureRecognizers>
+                </StackLayout>
+            </Grid>
+        </rf:TitledGroup.TitleView>
+        <Grid>
+
+        </Grid>
+    </rf:TitledGroup>
+</rf:ContentView2>

@@ -8,10 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xamarin.Essentials;
+
 namespace Moose.Mobile.BLE
 {
-    public abstract class BLEAgent<TDevice, TDriver> 
-        where TDriver : Driver, new() 
+    public abstract class BLEAgent<TDevice, TDriver>
+        where TDriver : Driver, new()
         where TDevice : SupportedBLEDevice<TDriver>
     {
         protected readonly IBluetoothLE ble;
@@ -48,10 +50,24 @@ namespace Moose.Mobile.BLE
             ble.Adapter.DeviceDisconnected += Adapter_DeviceDisconnected;
         }
 
+        public async Task<bool> RequestPermissionsAsync()
+        {
+            bool result = true;
+            await Xamarin.Forms.Device.InvokeOnMainThreadAsync(async () =>
+            {
+                var status = await Permissions.RequestAsync<Permissions.LocationAlways>();
+                if (status != PermissionStatus.Granted)
+                    result = false;
+
+            });
+            return result;
+        }
+
         private void Ble_StateChanged(object sender, Plugin.BLE.Abstractions.EventArgs.BluetoothStateChangedArgs e)
         {
             StateChanged?.Invoke(this, ble.Adapter);
         }
+
         public async Task StartEnumeratingDevicesAsync(bool knownOnly)
         {
             if (IsEnumerating) return;
@@ -59,7 +75,6 @@ namespace Moose.Mobile.BLE
             {
                 Guid[] uuids = null;
                 if (knownOnly) uuids = new Guid[] { new Guid(ServiceUuid) };
-                // ble.Adapter.ScanMode = ScanMode.LowLatency;
                 EnumerationStarted?.Invoke(this, ble.Adapter);
                 await ble.Adapter.StartScanningForDevicesAsync(uuids);
                 EnumerationStopped?.Invoke(this, ble.Adapter);
@@ -125,7 +140,6 @@ namespace Moose.Mobile.BLE
                             // Device is supported
                             Console.WriteLine("GGGGGGGGGGGGG");
                             var supportedDevice = CreateDevice(e.Device, service, read, write);
-                            await supportedDevice.SetupAsync();
                             SupportedDevices.Add(supportedDevice);
                             SupportedDeviceDiscovered?.Invoke(this, supportedDevice);
                             bleDevice = supportedDevice;
@@ -177,7 +191,7 @@ namespace Moose.Mobile.BLE
                 await device.ReleaseAsync();
                 await ble.Adapter.DisconnectDeviceAsync(device.Device);
             }
-            catch 
+            catch
             {
                 //throw ex;
             }

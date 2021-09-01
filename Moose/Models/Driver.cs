@@ -7,6 +7,8 @@ namespace Moose.Models
 {
     public abstract class Driver
     {
+        public event EventHandler OnDisconnectRequest;
+
         public Func<byte[], Task> WriteAsyncFunc;
         public Func<string, Task> LogAsyncFunc;
 
@@ -25,7 +27,7 @@ namespace Moose.Models
         public virtual void InjectMessage(string message)
         {
         }
-        
+
         protected async Task LogAsync(string message)
         {
             await LogAsyncFunc?.Invoke(message);
@@ -67,6 +69,12 @@ namespace Moose.Models
         {
             var bytes = Encoding.ASCII.GetBytes(message);
             await WriteAsync(bytes);
+        }
+
+        public Task DisconnectAsync()
+        {
+            OnDisconnectRequest?.Invoke(this, null);
+            return Task.CompletedTask;
         }
     }
 }

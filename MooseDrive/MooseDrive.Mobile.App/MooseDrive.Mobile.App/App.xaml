@@ -1,8 +1,85 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Application xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MooseDrive.Mobile.App.App">
+<rf:Application2  
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:rf="clr-namespace:RedCorners.Forms;assembly=RedCorners.Forms"
+    xmlns:mobile="clr-namespace:MooseDrive.Mobile.App"
+    x:Class="MooseDrive.Mobile.App.App">
     <Application.Resources>
+        <Color x:Key="Color0">#ffa000</Color>
+        <Color x:Key="Color1">#fff</Color>
+        <Color x:Key="Color2">#000</Color>
+        <Color x:Key="Color3">#ffd149</Color>
+        <Color x:Key="Color4">#c67100</Color>
+        <Color x:Key="Color5">#222</Color>
+        <Color x:Key="Color6">#EEE</Color>
+        <Color x:Key="Color7">#ad1457</Color>
+        <Color x:Key="Color8">#388e3c</Color>
+        <Color x:Key="Color9">#ffee58</Color>
+        <Color x:Key="Color10">#999</Color>
+        <Color x:Key="Color11">#AAA</Color>
 
+        <x:Double x:Key="FontSizeXXG">52</x:Double>
+        <x:Double x:Key="FontSizeXG">36</x:Double>
+        <x:Double x:Key="FontSizeG">28</x:Double>
+        <x:Double x:Key="FontSizeXXL">24</x:Double>
+        <x:Double x:Key="FontSizeXL">22</x:Double>
+        <x:Double x:Key="FontSizeL">16</x:Double>
+        <x:Double x:Key="FontSizeM">14</x:Double>
+        <x:Double x:Key="FontSizeS">12</x:Double>
+        <x:Double x:Key="FontSizeXS">11</x:Double>
+        <x:Double x:Key="FontSizeXXS">9</x:Double>
+
+        <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+            <Setter Property="BackgroundColor" Value="{StaticResource Color5}" />
+        </Style>
+
+        <Style TargetType="rf:ContentPage2" ApplyToDerivedTypes="True">
+            <Setter Property="AndroidLayoutInScreen" Value="False" />
+            <Setter Property="AndroidTranslucentStatus" Value="False" />
+            <Setter Property="BackgroundColor" Value="{StaticResource Color5}" />
+        </Style>
+
+        <Style ApplyToDerivedTypes="True" TargetType="rf:TitledGroup">
+            <Setter Property="TitleColor" Value="{StaticResource Color6}" />
+            <Setter Property="TitleAlignment" Value="Center" />
+            <Setter Property="HasShadow" Value="False" />
+            <Setter Property="FixBottomPadding" Value="True" />
+            <Setter Property="IsDark" Value="True" />
+            <Setter Property="TitleTextColor" Value="{StaticResource Color5}" />
+        </Style>
+
+        <Style ApplyToDerivedTypes="True" TargetType="rf:Frame2">
+            <Setter Property="HasShadow" Value="True" />
+            <Setter Property="ShadowColor" Value="{Static mobile:Vars.ShadowColor}" />
+            <Setter Property="ShadowRadius" Value="{Static mobile:Vars.ShadowRadius}" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style TargetType="Label" ApplyToDerivedTypes="True">
+            <Setter Property="FontFamily" Value="{Static mobile:Vars.FontRegular}" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeM}" />
+            <Setter Property="TextColor" Value="{StaticResource Color1}" />
+            <Style.Triggers>
+                <Trigger TargetType="Label" Property="FontAttributes" Value="Bold">
+                    <Setter Property="FontFamily" Value="{Static mobile:Vars.FontSemibold}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="ActivityIndicator">
+            <Setter Property="IsRunning" Value="True" />
+        </Style>
+
+        <Style TargetType="ListView" ApplyToDerivedTypes="True">
+            <Setter Property="BackgroundColor" Value="{StaticResource Color5}" />
+            <Setter Property="SeparatorColor" Value="{StaticResource Color1}" />
+            <Setter Property="SeparatorVisibility" Value="Default" />
+        </Style>
+
+        <Style TargetType="Button" ApplyToDerivedTypes="True">
+            <Setter Property="Visual" Value="Material" />
+        </Style>
     </Application.Resources>
-</Application>
+</rf:Application2>

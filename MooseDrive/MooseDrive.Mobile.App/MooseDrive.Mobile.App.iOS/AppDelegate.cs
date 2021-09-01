@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
+
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+
 using UIKit;
 
 namespace MooseDrive.Mobile.App.iOS
@@ -22,7 +27,11 @@ namespace MooseDrive.Mobile.App.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            AppCenter.Start("4cc9a2bd-065c-432d-842f-4bf3fffede3a",
+                      typeof(Analytics), typeof(Crashes));
+            Rg.Plugins.Popup.Popup.Init();
             global::Xamarin.Forms.Forms.Init();
+            Xamarin.Forms.FormsMaterial.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

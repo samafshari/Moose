@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Moose.Mobile.BLE\Moose.Mobile.BLE.csproj" />
     <ProjectReference Include="..\..\Moose\Moose.csproj" />
   </ItemGroup>
 

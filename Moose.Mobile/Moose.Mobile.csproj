@@ -16,4 +16,8 @@
 	<ItemGroup>
 	  <Folder Include="Models\" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Moose.Mobile.BLE\Moose.Mobile.BLE.csproj" />
+	</ItemGroup>
 </Project>

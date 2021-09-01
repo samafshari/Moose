@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rf:ContentPage2
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:rf="clr-namespace:RedCorners.Forms;assembly=RedCorners.Forms"
+    xmlns:local="clr-namespace:MooseDrive.Mobile.App.Views"
+    xmlns:vm="clr-namespace:MooseDrive.Mobile.App.ViewModels"
+    mc:Ignorable="d"
+    x:Class="MooseDrive.Mobile.App.Views.ConnectPage">
+    <ContentPage.BindingContext>
+        <vm:ConnectViewModel />
+    </ContentPage.BindingContext>
+    <rf:TitledContentView 
+        Title="Connect" 
+        BackCommand="{Binding GoBackCommand}" 
+        IsBackButtonVisible="True">
+        <rf:TitledContentView.ToolBar>
+            <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+                <ActivityIndicator
+                    BindingContext="{Binding Service}"
+                    IsVisible="{Binding IsEnumerating}" 
+                    Color="{StaticResource Color5}"
+                    />
+            </StackLayout>
+        </rf:TitledContentView.ToolBar>
+
+        <Grid>
+            <StackLayout
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                IsVisible="{Binding IsEmpty}">
+                <Image
+                    Source="bluetooth"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    WidthRequest="72"
+                    HeightRequest="72" 
+                    Margin="0,0,0,4"
+                    />
+                <Label 
+                    Text="No Supported Devices Found" 
+                    HorizontalOptions="Center" 
+                    InputTransparent="True"
+                    FontSize="{StaticResource FontSizeL}" />
+                <Label
+                    Text="Refresh"
+                    TextColor="{StaticResource Color0}"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    InputTransparent="True"
+                    FontSize="{StaticResource FontSizeL}">
+                </Label>
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding RefreshCommand}" />
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+            <ListView
+                ItemsSource="{Binding Items}"
+                SelectionMode="None"
+                RowHeight="44">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid HeightRequest="44">
+                                <Label 
+                                    Margin="16,0"
+                                    Text="{Binding Device.Name}" 
+                                    TextColor="{StaticResource Color1}" 
+                                    VerticalOptions="Center" 
+                                    InputTransparent="True" />
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ConnectCommand}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </rf:TitledContentView>
+</rf:ContentPage2>
