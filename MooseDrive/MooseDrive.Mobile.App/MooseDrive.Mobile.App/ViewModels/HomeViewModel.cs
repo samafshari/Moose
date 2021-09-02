@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace MooseDrive.Mobile.App.ViewModels
@@ -22,6 +23,11 @@ namespace MooseDrive.Mobile.App.ViewModels
 
         public bool IsConnected { get; set; } = false;
         public string DeviceName => device?.Name;
+
+        public int RPM { get; private set; }
+        public int Speed { get; private set; }
+        public int MAF { get; private set; }
+        public int EngineLoad { get; private set; }
 
         public enum Tabs
         {
@@ -56,9 +62,14 @@ namespace MooseDrive.Mobile.App.ViewModels
 
             BluetoothService.Connected += Agent_SupportedDeviceConnected;
             BluetoothService.Disconnected += Agent_SupportedDeviceDisconnected;
-            BluetoothService.OnUpdate += (s, e) => UpdateProperties();
+            BluetoothService.OnUpdate += (s, e) => Refresh();
         }
 
+        public override void OnStart()
+        {
+            DeviceDisplay.KeepScreenOn = true;
+            base.OnStart();
+        }
 
         private void Agent_SupportedDeviceConnected(object sender, ELMDevice result)
         {
@@ -96,6 +107,15 @@ namespace MooseDrive.Mobile.App.ViewModels
         public override void Refresh()
         {
             base.Refresh();
+            var driver = device?.Driver;
+            if (driver != null)
+            {
+                RPM = driver.RPM;
+                Speed = driver.Speed;
+                MAF = driver.MAF;
+                EngineLoad = driver.EngineLoad;
+            }
+
             UpdateProperties();
         }
     }

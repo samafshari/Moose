@@ -9,13 +9,23 @@ namespace MooseDrive.Messages
     public abstract class ELMMessage
     {
         public virtual string Message { get; }
+        public virtual string ExpectedResponse { get; } = "OK";
         public virtual object Result { get; protected set; }
         public bool IsSending { get; set; }
 
         public virtual bool ProcessResponse(string response)
         {
-            return true;
+            return response == ExpectedResponse || IsResponseMine(response);
         }
+
+        public bool IsResponseMine(string response)
+        {
+            if (string.IsNullOrWhiteSpace(response)) return false;
+            var hex = string.Join("", response.Split(' '));
+            if (hex.Length < 4) return false;
+            return hex.Substring(2, 2) == Message.Split(' ').Last();
+        }
+
     }
 
     public abstract class ELMMessage<T> : ELMMessage
@@ -36,12 +46,12 @@ namespace MooseDrive.Messages
     {
         public override bool ProcessResponse(string response)
         {
+            if (!IsResponseMine(response)) return false;
             //> 010D
             //41 0D FF
             //To get the speed, simply convert the value to decimal:
             //
             //0xFF = 255 km / h
-
             var hex = string.Join("", response.Split(' ').Skip(2));
             var integer = int.Parse(hex, System.Globalization.NumberStyles.HexNumber);
             Result = integer;
@@ -68,6 +78,11 @@ namespace MooseDrive.Messages
     {
         public override string Message { get; } = "AT SP 00";
     }
+    
+    public class _0100 : ELMMessage
+    {
+        public override string Message { get; } = "01 00";
+    }
 
     public class ATZ : ELMStringMessage
     {
@@ -76,7 +91,7 @@ namespace MooseDrive.Messages
 
     public class EngineLoad : ELMIntMessage
     {
-        public override string Message { get; } = "0104";
+        public override string Message { get; } = "01 04";
 
         public override bool ProcessResponse(string response)
         {
@@ -92,7 +107,7 @@ namespace MooseDrive.Messages
 
     public class CoolantTemp : ELMIntMessage
     {
-        public override string Message { get; } = "0105";
+        public override string Message { get; } = "01 05";
 
         public override bool ProcessResponse(string response)
         {
@@ -108,7 +123,7 @@ namespace MooseDrive.Messages
 
     public class FuelPressure : ELMIntMessage
     {
-        public override string Message { get; } = "010A";
+        public override string Message { get; } = "01 0A";
 
         public override bool ProcessResponse(string response)
         {
@@ -124,12 +139,12 @@ namespace MooseDrive.Messages
 
     public class IntakePressure : ELMMessage<int>
     {
-        public override string Message { get; } = "010B";
+        public override string Message { get; } = "01 0B";
     }
 
     public class RPM : ELMIntMessage
     {
-        public override string Message { get; } = "010C";
+        public override string Message { get; } = "01 0C";
 
         public override bool ProcessResponse(string response)
         {
@@ -145,7 +160,7 @@ namespace MooseDrive.Messages
 
     public class Speed : ELMIntMessage
     {
-        public override string Message { get; } = "010D";
+        public override string Message { get; } = "01 0D";
     }
 
     //public class TimingAdvance : ELMMessage<int>
@@ -155,7 +170,7 @@ namespace MooseDrive.Messages
 
     public class IntakeTemp : ELMIntMessage
     {
-        public override string Message { get; } = "010F";
+        public override string Message { get; } = "01 0F";
 
         public override bool ProcessResponse(string response)
         {
@@ -171,7 +186,7 @@ namespace MooseDrive.Messages
 
     public class MAF : ELMIntMessage
     {
-        public override string Message { get; } = "0110";
+        public override string Message { get; } = "01 10";
 
         public override bool ProcessResponse(string response)
         {
@@ -187,6 +202,6 @@ namespace MooseDrive.Messages
 
     public class ThrottlePos : ELMIntMessage
     {
-        public override string Message { get; } = "0111";
+        public override string Message { get; } = "01 11";
     }
 }

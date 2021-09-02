@@ -170,7 +170,7 @@ namespace Moose.Mobile.Services.Implementations
             }
             catch (Exception ex)
             {
-                throw ex;
+                AppBase.Instance.DisplayAlert("Error Connecting", ex.ToString(), "OK");
             }
         }
 

@@ -59,11 +59,11 @@
             <ListView
                 ItemsSource="{Binding Items}"
                 SelectionMode="None"
-                RowHeight="44">
+                RowHeight="50">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid HeightRequest="44">
+                            <Grid HeightRequest="50">
                                 <Label 
                                     Margin="16,0"
                                     Text="{Binding Device.Name}" 

@@ -63,7 +63,12 @@
             </Grid>
         </rf:TitledGroup.TitleView>
         <Grid>
-
+            <StackLayout>
+                <Label Text="{Binding RPM, StringFormat='RPM: {0}'}" />
+                <Label Text="{Binding Speed, StringFormat='SPEED: {0}'}" />
+                <Label Text="{Binding MAF, StringFormat='MAF: {0}'}" />
+                <Label Text="{Binding EngineLoad, StringFormat='LOAD: {0}'}" />
+            </StackLayout>
         </Grid>
     </rf:TitledGroup>
 </rf:ContentView2>

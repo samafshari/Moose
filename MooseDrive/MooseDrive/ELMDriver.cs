@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace MooseDrive
 {
@@ -23,6 +24,8 @@ namespace MooseDrive
         public int MAF { get; private set; }
         public int EngineLoad { get; private set; }
 
+        readonly List<ELMMessage> handlers = new List<ELMMessage>();
+
         public readonly List<ELMMessage> LoopMessages = new List<ELMMessage>
         {
             new RPM(),
@@ -33,33 +36,93 @@ namespace MooseDrive
 
         readonly List<ELMMessage> initializationSequence = new List<ELMMessage>
         {
-            new ATSP00(),
+            new ATE0(),
             new ATL0(),
-            new ATST00(),
-            new ATSP00()
+            new ATSP00(),
+            new _0100()
+            //new ATST00(),
         };
 
-        public ELMMessage LastMessage { get; private set; }
         bool expectingEcho = false;
+
+        StringBuilder messageBuffer = new StringBuilder();
 
         public override void InjectMessage(string message)
         {
-            Log(message);
+            InjectMessage(message, true);
+        }
+
+        public void InjectMessage(string message, bool lookForEnd)
+        {
+            if (message != null)
+            {
+                if (message[message.Length - 1] == '>' || !lookForEnd)
+                {
+                    message = messageBuffer.ToString() + message.Substring(0, message.Length - 1);
+                    messageBuffer.Clear();
+                }
+                else
+                {
+                    messageBuffer.Append(message);
+                    return;
+                }
+                message = message.Trim();
+            }
+
+            if (message.Contains("\r"))
+            {
+                foreach (var item in message.Split('\r'))
+                {
+                    InjectMessage(item, false);
+                }
+                return;
+            }
+            if (message.Contains("\n"))
+            {
+                foreach (var item in message.Split('\n'))
+                {
+                    InjectMessage(item, false);
+                }
+                return;
+            }
+
             if (expectingEcho)
             {
                 expectingEcho = false;
                 return;
             }
-            if (LastMessage == null) return; // Actually, this should not happen. This means a response to an unknown message has arrived
-            LastMessage.IsSending = false;
-            if (LastMessage.ProcessResponse(message))
+            
+            bool processed = false;
+            foreach (var handler in handlers.OrderByDescending(x => x.IsSending))
             {
-                if (LastMessage is RPM rpm) RPM = rpm.Result;
-                else if (LastMessage is Speed speed) Speed = speed.Result;
-                else if (LastMessage is MAF maf) MAF = maf.Result;
-                else if (LastMessage is EngineLoad load) EngineLoad = load.Result;
-                OnResponseToMessage?.Invoke(this, LastMessage);
+                try
+                {
+                    if (handler.ProcessResponse(message))
+                    {
+                        handler.IsSending = false;
+                        if (handler is RPM rpm) RPM = rpm.Result;
+                        else if (handler is Speed speed) Speed = speed.Result;
+                        else if (handler is MAF maf) MAF = maf.Result;
+                        else if (handler is EngineLoad load) EngineLoad = load.Result;
+                        OnResponseToMessage?.Invoke(this, handler);
+                        processed = true;
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    handler.IsSending = false;
+                }
             }
+
+            if (!processed)
+            {
+                foreach (var handler in handlers)
+                {
+                    handler.IsSending = false;
+                }
+            }
+
             OnUpdate?.Invoke(this, null);
             base.InjectMessage(message);
         }
@@ -102,10 +165,10 @@ namespace MooseDrive
                 {
                     if (queue.TryDequeue(out var message))
                     {
-                        LastMessage = message;
-                        expectingEcho = true;
+                        messageBuffer.Clear();
+                        handlers.RemoveAll(x => x.GetType() == message.GetType());
+                        handlers.Add(message);
                         await WriteAsync(message.Message + "\r");
-                        await WaitAndCrashIfFail(() => LastMessage != null && LastMessage.IsSending);
                     }
                     else break;
                 }

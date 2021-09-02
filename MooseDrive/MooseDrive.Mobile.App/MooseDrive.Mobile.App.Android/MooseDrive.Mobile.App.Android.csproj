@@ -79,24 +79,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
-    <None Include="Assets\AboutAssets.txt" />
+	  <AndroidAsset Include="Assets\**\*.*" />
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\styles.xml" />
-    <AndroidResource Include="Resources\values\colors.xml" />
-    <AndroidResource Include="Resources\mipmap-anydpi-v26\icon.xml" />
-    <AndroidResource Include="Resources\mipmap-anydpi-v26\icon_round.xml" />
-    <AndroidResource Include="Resources\mipmap-hdpi\icon.png" />
-    <AndroidResource Include="Resources\mipmap-hdpi\launcher_foreground.png" />
-    <AndroidResource Include="Resources\mipmap-mdpi\icon.png" />
-    <AndroidResource Include="Resources\mipmap-mdpi\launcher_foreground.png" />
-    <AndroidResource Include="Resources\mipmap-xhdpi\icon.png" />
-    <AndroidResource Include="Resources\mipmap-xhdpi\launcher_foreground.png" />
-    <AndroidResource Include="Resources\mipmap-xxhdpi\icon.png" />
-    <AndroidResource Include="Resources\mipmap-xxhdpi\launcher_foreground.png" />
-    <AndroidResource Include="Resources\mipmap-xxxhdpi\icon.png" />
-    <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
+	  <AndroidResource Include="Resources\values\**\*.xml" />
+	  <AndroidResource Include="Resources\mipmap-anydpi-v26\**\*.xml" />
+	  <AndroidResource Include="Resources\mipmap-hdpi\**\*.png" />
+	  <AndroidResource Include="Resources\mipmap-mdpi\**\*.png" />
+	  <AndroidResource Include="Resources\mipmap-xhdpi\**\*.png" />
+	  <AndroidResource Include="Resources\mipmap-xxhdpi\**\*.png" />
+	  <AndroidResource Include="Resources\mipmap-xxxhdpi\**\*.png" />
+	  <AndroidResource Include="Resources\drawable-xhdpi\**\*.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

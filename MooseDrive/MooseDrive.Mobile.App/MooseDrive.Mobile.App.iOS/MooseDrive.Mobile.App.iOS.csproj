@@ -148,4 +148,9 @@
       <Name>MooseDrive.Mobile.App</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+	  <BundleResource Include="Resources\**\*.ttf" />
+	  <BundleResource Include="Resources\**\*.png" />
+	  <BundleResource Include="Resources\**\*.json" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,26 @@
+{
+  "Projects": [
+    {
+      "ResourcesDirectory": "MooseDrive.Mobile.App\\MooseDrive.Mobile.App.Android\\Resources",
+      "CSProjPath": "MooseDrive.Mobile.App\\MooseDrive.Mobile.App.Android\\MooseDrive.Mobile.App.Android.csproj",
+      "Platform": "Android",
+      "Mode": "Mirror",
+      "X3": "drawable-xxhdpi",
+      "X2": "drawable-xhdpi",
+      "X1": "drawable-hdpi"
+    },
+    {
+      "ResourcesDirectory": "MooseDrive.Mobile.App\\MooseDrive.Mobile.App.iOS\\Resources",
+      "CSProjPath": "MooseDrive.Mobile.App\\MooseDrive.Mobile.App.iOS\\MooseDrive.Mobile.App.iOS.csproj",
+      "Platform": "iOS",
+      "Mode": "Source"
+    }
+  ],
+  "SyncExtensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif"
+  ],
+  "SolutionPath": "MooseDrive.sln"
+}
