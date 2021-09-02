@@ -10,8 +10,14 @@ namespace MooseDrive.Messages
     {
         public virtual string Message { get; }
         public virtual string ExpectedResponse { get; } = "OK";
-        public virtual object Result { get; protected set; }
+        protected virtual object Result { get; set; }
+        public string LastInput { get; set; }
         public bool IsSending { get; set; }
+
+        public virtual object GetResult()
+        {
+            return Result;
+        }
 
         public virtual bool ProcessResponse(string response)
         {
@@ -30,6 +36,11 @@ namespace MooseDrive.Messages
 
     public abstract class ELMMessage<T> : ELMMessage
     {
+        public override object GetResult()
+        {
+            return Result;
+        }
+
         public new virtual T Result { get; protected set; }
     }
 

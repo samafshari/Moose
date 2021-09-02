@@ -4,4 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Realm" Version="10.4.0" />
+    <PackageReference Include="RedCorners" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Moose.Database\Moose.Database.csproj" />
+    <ProjectReference Include="..\..\Moose\Moose.csproj" />
+    <ProjectReference Include="..\MooseDrive.Data\MooseDrive.Data.csproj" />
+  </ItemGroup>
+
 </Project>

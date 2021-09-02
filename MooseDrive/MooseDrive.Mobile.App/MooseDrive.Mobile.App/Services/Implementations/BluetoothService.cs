@@ -3,6 +3,7 @@ using Moose.Mobile.Services.Implementations;
 using Moose.Models;
 
 using MooseDrive;
+using MooseDrive.Mobile.App;
 using MooseDrive.Mobile.App.Services;
 
 using Plugin.BLE.Abstractions.Contracts;
@@ -170,7 +171,7 @@ namespace Moose.Mobile.Services.Implementations
             }
             catch (Exception ex)
             {
-                AppBase.Instance.DisplayAlert("Error Connecting", ex.ToString(), "OK");
+                App.Instance.DisplayAlert("Error Connecting", ex.ToString(), "OK");
             }
         }
 

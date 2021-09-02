@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -20,7 +21,7 @@ namespace MooseDrive.Mobile.App.ViewModels
 
         public IBluetoothService BluetoothService { get; }
         public ISettingsService SettingsService { get; }
-
+        public IDatabaseService DatabaseService { get; }
         public bool IsConnected { get; set; } = false;
         public string DeviceName => device?.Name;
 
@@ -28,6 +29,8 @@ namespace MooseDrive.Mobile.App.ViewModels
         public int Speed { get; private set; }
         public int MAF { get; private set; }
         public int EngineLoad { get; private set; }
+
+        public string Last { get; private set; }
 
         public enum Tabs
         {
@@ -57,12 +60,15 @@ namespace MooseDrive.Mobile.App.ViewModels
 
             BluetoothService = DependencyService.Get<IBluetoothService>();
             SettingsService = DependencyService.Get<ISettingsService>();
+            DatabaseService = DependencyService.Get<IDatabaseService>();
 
             Status = TaskStatuses.Success;
 
             BluetoothService.Connected += Agent_SupportedDeviceConnected;
             BluetoothService.Disconnected += Agent_SupportedDeviceDisconnected;
             BluetoothService.OnUpdate += (s, e) => Refresh();
+
+            DependencyService.Get<ISessionService>().Setup();
         }
 
         public override void OnStart()
@@ -115,8 +121,25 @@ namespace MooseDrive.Mobile.App.ViewModels
                 MAF = driver.MAF;
                 EngineLoad = driver.EngineLoad;
             }
-
+            Task.Run(LastAsync);
             UpdateProperties();
         }
+
+        async Task LastAsync()
+        {
+            var count = await DatabaseService.ELMLogger.CountAsync();
+            var last = await DatabaseService.ELMLogger.GetLastAsync();
+
+            Last = $"Count: {count}\n" +
+                $"Last: {last.SequenceId}, {last.Code}, {last.Response}, {last.Timestamp}\n" +
+                $"{last.Latitude}, {last.Longitude}, {last.LocationTimestamp}\n" +
+                $"{last.Timestamp - last.LocationTimestamp}";
+            RaisePropertyChanged(nameof(Last));
+        }
+
+        public Command SettingsCommand => new Command(async () =>
+        {
+            await App.Instance.ShowPopupAsync(new Views.SettingsPopup());
+        });
     }
 }

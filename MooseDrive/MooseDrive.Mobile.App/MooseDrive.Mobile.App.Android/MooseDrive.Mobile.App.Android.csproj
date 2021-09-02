@@ -79,27 +79,66 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
-	  <AndroidAsset Include="Assets\**\*.*" />
+    <AndroidAsset Include="Assets\**\*.*" />
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-	  <AndroidResource Include="Resources\values\**\*.xml" />
-	  <AndroidResource Include="Resources\mipmap-anydpi-v26\**\*.xml" />
-	  <AndroidResource Include="Resources\mipmap-hdpi\**\*.png" />
-	  <AndroidResource Include="Resources\mipmap-mdpi\**\*.png" />
-	  <AndroidResource Include="Resources\mipmap-xhdpi\**\*.png" />
-	  <AndroidResource Include="Resources\mipmap-xxhdpi\**\*.png" />
-	  <AndroidResource Include="Resources\mipmap-xxxhdpi\**\*.png" />
-	  <AndroidResource Include="Resources\drawable-xhdpi\**\*.png" />
+    <AndroidResource Include="Resources\values\**\*.xml" />
+    <AndroidResource Include="Resources\mipmap-anydpi-v26\**\*.xml" />
+    <AndroidResource Include="Resources\mipmap-hdpi\**\*.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\**\*.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\**\*.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\**\*.png" />
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\**\*.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\**\*.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\drawable\" />
+    <Folder Include="Resources\drawable\xxhdpi\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MooseDrive.Mobile.App\MooseDrive.Mobile.App.csproj">
       <Project>{BCFA81E4-85D0-4F26-B486-892942EB81A0}</Project>
       <Name>MooseDrive.Mobile.App</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\bluetooth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\ecg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\heart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\note.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\oxygentank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\oxygentank2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\signal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\unplugged.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

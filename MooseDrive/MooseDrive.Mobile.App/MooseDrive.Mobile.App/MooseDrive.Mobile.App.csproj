@@ -25,11 +25,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Moose.Database\Moose.Database.csproj" />
     <ProjectReference Include="..\..\..\Moose.Mobile.BLE\Moose.Mobile.BLE.csproj" />
+    <ProjectReference Include="..\..\MooseDrive.Logger\MooseDrive.Logger.csproj" />
     <ProjectReference Include="..\..\MooseDrive\MooseDrive.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Views\CircleButtonView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\ConnectPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>

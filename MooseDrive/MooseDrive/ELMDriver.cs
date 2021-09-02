@@ -100,6 +100,7 @@ namespace MooseDrive
                     if (handler.ProcessResponse(message))
                     {
                         handler.IsSending = false;
+                        handler.LastInput = message;
                         if (handler is RPM rpm) RPM = rpm.Result;
                         else if (handler is Speed speed) Speed = speed.Result;
                         else if (handler is MAF maf) MAF = maf.Result;

@@ -68,7 +68,21 @@
                 <Label Text="{Binding Speed, StringFormat='SPEED: {0}'}" />
                 <Label Text="{Binding MAF, StringFormat='MAF: {0}'}" />
                 <Label Text="{Binding EngineLoad, StringFormat='LOAD: {0}'}" />
+                <Label Text="{Binding Last, StringFormat='Last: {0}'}" />
             </StackLayout>
+
+            <rf:ContentView2 FixBottomPadding="True" InputTransparent="True" CascadeInputTransparent="False" VerticalOptions="End">
+                <StackLayout 
+                    Orientation="Horizontal" 
+                    Spacing="10" 
+                    Margin="20"
+                    HorizontalOptions="End"
+                    VerticalOptions="End">
+                    <local:CircleButtonView
+                        Source="settings"
+                        Command="{Binding SettingsCommand}" />
+                </StackLayout>
+            </rf:ContentView2>
         </Grid>
     </rf:TitledGroup>
 </rf:ContentView2>

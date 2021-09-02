@@ -7,6 +7,7 @@
     xmlns:rf="clr-namespace:RedCorners.Forms;assembly=RedCorners.Forms"
     xmlns:rfc="clr-namespace:RedCorners.Forms.Converters;assembly=RedCorners.Forms"
     xmlns:local="clr-namespace:MooseDrive.Mobile.App.Views"
+    xmlns:vm="clr-namespace:MooseDrive.Mobile.App.ViewModels"
     mc:Ignorable="d"
     x:Class="MooseDrive.Mobile.App.Views.SettingsPopup">
     <local:MyPopupPage.BindingContext>
@@ -38,39 +39,7 @@
                         Text="{Binding LastDeviceName, StringFormat='Auto connect to: {0}'}"
                         FontAttributes="Italic"
                         Opacity="0.5" />
-                    <Grid>
-                        <Label Text="Show Hidden Sessions" />
-                        <Switch IsToggled="{Binding ShowHiddenSessions}" />
-                    </Grid>
-                    <Grid>
-                        <Label Text="Enable Vibration" />
-                        <Switch IsToggled="{Binding EnableVibration}" />
-                    </Grid>
-
-                    <rf:Frame2 VerticalOptions="CenterAndExpand" Padding="10" BackgroundColor="{StaticResource Color11}">
-                        <View.GestureRecognizers>
-                            <TapGestureRecognizer />
-                        </View.GestureRecognizers>
-                        <View.Triggers>
-                            <DataTrigger TargetType="View" Binding="{Binding EnableVibration}" Value="False">
-                                <Setter Property="Opacity" Value="0.5" />
-                                <Setter Property="InputTransparent" Value="True" />
-                            </DataTrigger>
-                        </View.Triggers>
-                        <StackLayout>
-                            <Grid>
-                                <Label Text="O2 Vibration Limit" />
-                                <Label Text="{Binding O2VibrationThreshold, StringFormat='{0}%'}" HorizontalOptions="End" />
-                            </Grid>
-                            <Slider Maximum="99" Minimum="50" Value="{Binding O2VibrationThreshold}" />
-                            <Grid>
-                                <Label Text="Vibration Duration" />
-                                <Label Text="{Binding VibrationDurationMs, StringFormat='{0}ms'}" HorizontalOptions="End" />
-                            </Grid>
-                            <Slider Maximum="1000" Minimum="10" Value="{Binding VibrationDurationMs}" />
-                        </StackLayout>
-                    </rf:Frame2>
-
+                    
                     <Grid HeightRequest="8" />
                     <Button Text="Export Database..." Command="{Binding ExportDatabaseCommand}" />
                     <Button Text="Import Database..." Command="{Binding ImportDatabaseCommand}" />
