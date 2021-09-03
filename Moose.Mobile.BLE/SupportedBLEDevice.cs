@@ -46,7 +46,7 @@ namespace Moose.Mobile.BLE
             await SetupAsync();
         }
 
-        public virtual async Task SetupAsync()
+        protected virtual async Task SetupAsync()
         {
             readCharacteristic.ValueUpdated += ReadCharacteristic_ValueUpdated;
             await readCharacteristic.StartUpdatesAsync();
@@ -93,10 +93,11 @@ namespace Moose.Mobile.BLE
         {
         }
 
-        public override async Task SetupAsync()
+        protected override async Task SetupAsync()
         {
             await base.SetupAsync();
             Driver = new TDriver();
+            Driver.OnDisconnectRequest += Driver_OnDisconnectRequest;
             Driver.WriteAsyncFunc = WriteAsync;
             Driver.LogAsyncFunc = LogAsync;
             await Driver.SetupAsync();
@@ -108,15 +109,19 @@ namespace Moose.Mobile.BLE
             Driver?.InjectMessage(e.Characteristic.StringValue);
         }
 
-        private void ReadCharacteristic_ValueUpdated(object sender, Plugin.BLE.Abstractions.EventArgs.CharacteristicUpdatedEventArgs e)
+        private void ReadCharacteristic_ValueUpdated(object sender, CharacteristicUpdatedEventArgs e)
         {
-            Driver?.InjectMessage(e.Characteristic.Value);
-            Driver?.InjectMessage(e.Characteristic.StringValue);
+            Update(e);
         }
 
         public async Task WriteAsync(byte[] bytes)
         {
             await writeCharacteristic.WriteAsync(bytes);
+        }
+
+        private async void Driver_OnDisconnectRequest(object sender, EventArgs e)
+        {
+            await ReleaseAsync();
         }
     }
 }
