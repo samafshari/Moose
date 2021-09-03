@@ -39,7 +39,7 @@ namespace MooseDrive.Mobile.App.Services.Implementations
 
         public List<string> ListAll()
         {
-            return Directory.EnumerateFiles(Vars.DatabaseBasePath, $"*.{Vars.DatabaseExtension}").ToList();
+            return Directory.EnumerateFiles(Vars.DatabaseBasePath, $"*.{Vars.DatabaseExtension}").OrderByDescending(x => Path.GetFileName(x)).ToList();
         }
     }
 }
