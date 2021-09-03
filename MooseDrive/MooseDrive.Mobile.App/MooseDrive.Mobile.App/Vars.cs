@@ -16,7 +16,8 @@ namespace MooseDrive.Mobile.App
         public static string FontSemibold => null;// IsIOS ? "Nunito-SemiBold" : "Nunito-SemiBold.ttf#Nunito-SemiBold";
         public static string DatabaseExtension => "realm";
         public static string StorageDirectory => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        public static string DatabasePath => Path.Combine(StorageDirectory, $"moosedrive.{DatabaseExtension}");
+        public static string DefaultDatabasePath => Path.Combine(DatabaseBasePath, $"moosedrive.{DatabaseExtension}");
+        public static string DatabaseBasePath => Path.Combine(StorageDirectory, "moosedb");
         public static string TempDatabasePath => Path.Combine(StorageDirectory, $"moosedrivet.{DatabaseExtension}");
         public static int RealtimeFetchDelayMs => 1000;
     }

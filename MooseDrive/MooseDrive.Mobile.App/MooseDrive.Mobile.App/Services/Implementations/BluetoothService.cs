@@ -211,8 +211,16 @@ namespace Moose.Mobile.Services.Implementations
             {
                 while (IsConnected && Device?.Driver != null)
                 {
-                    await Device.Driver.UpdateAsync();
+                    try
+                    {
+                        await Device.Driver.UpdateAsync();
+                    }
+                    catch   (Exception ex)
+                    {
+                        Console.WriteLine($"Error in read realtime: {ex}");
+                    }
                 }
+                Console.WriteLine("Realtime read finished");
             });
         }
 

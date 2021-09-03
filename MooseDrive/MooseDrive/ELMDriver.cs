@@ -54,6 +54,7 @@ namespace MooseDrive
 
         public void InjectMessage(string message, bool lookForEnd)
         {
+            Log(message);
             if (message != null)
             {
                 if (message[message.Length - 1] == '>' || !lookForEnd)
@@ -91,9 +92,9 @@ namespace MooseDrive
                 expectingEcho = false;
                 return;
             }
-            
+
             bool processed = false;
-            foreach (var handler in handlers.OrderByDescending(x => x.IsSending))
+            foreach (var handler in handlers.OrderByDescending(x => x.IsSending).ToList())
             {
                 try
                 {
@@ -118,7 +119,7 @@ namespace MooseDrive
 
             if (!processed)
             {
-                foreach (var handler in handlers)
+                foreach (var handler in handlers.ToList())
                 {
                     handler.IsSending = false;
                 }
@@ -140,10 +141,17 @@ namespace MooseDrive
 
         public async Task RunSequenceAsync(IEnumerable<ELMMessage> messages, TimeSpan delay)
         {
-            foreach (var item in messages)
+            try
             {
-                await SendAsync(item);
-                await Task.Delay(delay);
+                foreach (var item in messages)
+                {
+                    await SendAsync(item);
+                    await Task.Delay(delay);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
 
@@ -152,8 +160,9 @@ namespace MooseDrive
             queue.Enqueue(message);
             message.IsSending = true;
             _ = Task.Run(ProcessQueueAsync);
-            while (message.IsSending)
-                await Task.Delay(10);
+            await WaitAsync(() => message.IsSending, TimeSpan.FromSeconds(5));
+            //while (message.IsSending) 
+            //    await Task.Delay(10);
         }
 
         async Task ProcessQueueAsync()

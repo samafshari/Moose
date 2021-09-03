@@ -81,6 +81,9 @@
                     <local:CircleButtonView
                         Source="settings"
                         Command="{Binding SettingsCommand}" />
+                    <local:CircleButtonView
+                        Source="export"
+                        Command="{Binding ExportCommand}" />
                 </StackLayout>
             </rf:ContentView2>
         </Grid>

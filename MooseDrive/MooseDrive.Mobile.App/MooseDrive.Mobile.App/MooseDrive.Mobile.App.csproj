@@ -32,10 +32,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\ExportDatabasePopup.xaml.cs">
+      <DependentUpon>ExportDatabasePopup.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Update="Views\CircleButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ConnectPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ExportDatabasePopup.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\HomePage.xaml">

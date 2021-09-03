@@ -12,5 +12,8 @@ namespace MooseDrive.Mobile.App.Services
     {
         Database Db { get; }
         ELMLogger ELMLogger { get; }
+        LocationLogger LocationLogger { get; }
+        void Use(string sessionId);
+        List<string> ListAll();
     }
 }

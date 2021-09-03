@@ -28,6 +28,7 @@ namespace MooseDrive.Mobile.App.ViewModels
             settingsService = DependencyService.Get<ISettingsService>();
 
             Status = TaskStatuses.Success;
+            Sessions = databaseService.ListAll().Select(x => new SessionViewModel(x)).ToList();
         }
 
         public bool AutoConnect
@@ -40,6 +41,8 @@ namespace MooseDrive.Mobile.App.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public List<SessionViewModel> Sessions { get; }
 
         public string LastDeviceName => settingsService.Settings.LastDeviceName;
 

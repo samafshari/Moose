@@ -141,5 +141,10 @@ namespace MooseDrive.Mobile.App.ViewModels
         {
             await App.Instance.ShowPopupAsync(new Views.SettingsPopup());
         });
+
+        public Command ExportCommand => new Command(async () =>
+        {
+            await App.Instance.ShowPopupAsync(new Views.ExportDatabasePopup());
+        });
     }
 }

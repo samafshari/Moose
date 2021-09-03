@@ -19,7 +19,8 @@ namespace MooseDrive.Mobile.App.Services.Implementations
         readonly ILocationService locationService;
         readonly IBluetoothService bluetoothService;
         string sessionId;
-        long sequenceId;
+        long obdSeqId;
+        long locationSeqId;
 
         public SessionService()
         {
@@ -32,12 +33,16 @@ namespace MooseDrive.Mobile.App.Services.Implementations
         {
             bluetoothService.Connected += BluetoothService_Connected;
             bluetoothService.Disconnected += BluetoothService_Disconnected;
+
+            locationService.OnLocation += LocationService_OnLocation;
         }
 
         private void BluetoothService_Connected(object sender, ELMDevice e)
         {
             sessionId = IdExtensions.GenerateId();
-            sequenceId = 0;
+            obdSeqId = 0;
+            locationSeqId = 0;
+            databaseService.Use(sessionId);
 
             Task.Run(databaseService.Db.CompactAsync);
 
@@ -70,12 +75,13 @@ namespace MooseDrive.Mobile.App.Services.Implementations
                 Value = value,
                 Timestamp = DateTimeOffset.Now,
                 SessionId = sessionId,
-                SequenceId = sequenceId++
+                SequenceId = obdSeqId++
             };
-            if (sequenceId == long.MaxValue)
+            if (obdSeqId == long.MaxValue || locationSeqId == long.MaxValue)
             {
                 sessionId = IdExtensions.GenerateId();
-                sequenceId = 0;
+                obdSeqId = 0;
+                locationSeqId = 0;
             }
             if (locationService.LastKnown != null)
             {
@@ -85,5 +91,22 @@ namespace MooseDrive.Mobile.App.Services.Implementations
             }
             Task.Run(() => databaseService.ELMLogger.AddAsync(model));
         }
+
+        private void LocationService_OnLocation(object sender, Xamarin.Essentials.Location e)
+        {
+            if (e == null) return;
+            var model = new LocationReading
+            {
+                Accuracy = e.Accuracy ?? -1,
+                Latitude = e.Latitude,
+                Longitude = e.Longitude,
+                SequenceId = locationSeqId++,
+                SessionId = sessionId,
+                Speed = e.Speed ?? -1,
+                Timestamp = DateTimeOffset.Now
+            };
+            Task.Run(() => databaseService.LocationLogger.AddAsync(model));
+        }
+
     }
 }

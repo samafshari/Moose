@@ -8,17 +8,15 @@ using System.Text;
 
 namespace MooseDrive.Logger.Models
 {
-    public class OBDResponseRealmObject : RealmObject, IOBDResponse
+    public class LocationRealmObject : RealmObject, ILocation
     {
         [Indexed] public string Id { get; set; }
         public long SequenceId { get; set; }
         public string SessionId { get; set; }
-        public string Code { get; set; }
-        public string Response { get; set; }
-        public int Value { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public DateTimeOffset LocationTimestamp { get; set; }
+        public double Accuracy { get; set; }
+        public double Speed { get; set; }
         [Indexed] public DateTimeOffset Timestamp { get; set; }
     }
 }
