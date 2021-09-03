@@ -49,7 +49,14 @@ namespace MooseDrive
 
         public override void InjectMessage(string message)
         {
-            InjectMessage(message, true);
+            try
+            {
+                InjectMessage(message, true);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public void InjectMessage(string message, bool lookForEnd)
