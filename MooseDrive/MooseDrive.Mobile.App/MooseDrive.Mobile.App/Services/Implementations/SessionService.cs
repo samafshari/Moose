@@ -40,7 +40,7 @@ namespace MooseDrive.Mobile.App.Services.Implementations
 
         private void BluetoothService_Connected(object sender, ELMDevice e)
         {
-            sessionId = IdExtensions.GenerateId();
+            sessionId = DateTime.Now.ToString("yy-MM-dd-HH-mm_" + IdExtensions.GenerateId());
             obdSeqId = 0;
             locationSeqId = 0;
             databaseService.Use(sessionId);
