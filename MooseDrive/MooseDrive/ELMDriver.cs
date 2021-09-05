@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using MooseDrive.Models;
 
 namespace MooseDrive
 {
@@ -15,6 +16,7 @@ namespace MooseDrive
     {
         public event EventHandler<ELMMessage> OnResponseToMessage;
         public event EventHandler OnUpdate;
+        public event EventHandler<OBDResponse> OnResponse;
 
         volatile bool isSending = false;
         readonly ConcurrentQueue<ELMMessage> queue = new ConcurrentQueue<ELMMessage>();
@@ -101,6 +103,12 @@ namespace MooseDrive
             }
 
             bool processed = false;
+            var response = new OBDResponse
+            {
+                Response = message,
+                Timestamp = DateTimeOffset.Now,
+            };
+
             foreach (var handler in handlers.OrderByDescending(x => x.IsSending).ToList())
             {
                 try
@@ -113,6 +121,8 @@ namespace MooseDrive
                         else if (handler is Speed speed) Speed = speed.Result;
                         else if (handler is MAF maf) MAF = maf.Result;
                         else if (handler is EngineLoad load) EngineLoad = load.Result;
+                        response.Code = handler.Message;
+                        if (handler is ELMIntMessage elmInt) response.Value = elmInt.Result;
                         OnResponseToMessage?.Invoke(this, handler);
                         processed = true;
                         break;
@@ -132,6 +142,7 @@ namespace MooseDrive
                 }
             }
 
+            OnResponse?.Invoke(this, response);
             OnUpdate?.Invoke(this, null);
             base.InjectMessage(message);
         }

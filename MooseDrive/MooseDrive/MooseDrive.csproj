@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Moose.Mobile.BLE\Moose.Mobile.BLE.csproj" />
     <ProjectReference Include="..\..\Moose\Moose.csproj" />
+    <ProjectReference Include="..\MooseDrive.Data\MooseDrive.Data.csproj" />
   </ItemGroup>
 
 </Project>

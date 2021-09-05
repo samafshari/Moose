@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using RedCorners;
 
 [assembly: Dependency(typeof(SessionService))]
 namespace MooseDrive.Mobile.App.Services.Implementations
@@ -46,13 +47,12 @@ namespace MooseDrive.Mobile.App.Services.Implementations
 
             Task.Run(databaseService.Db.CompactAsync);
 
-            e.Driver.OnResponseToMessage += Driver_OnResponseToMessage;
+            e.Driver.OnResponse += Driver_OnResponse;
             Device.BeginInvokeOnMainThread(async () =>
             {
                 await locationService.StartAsync();
             });
         }
-
         private void BluetoothService_Disconnected(object sender, ELMDevice e)
         {
             Device.BeginInvokeOnMainThread(async () =>
@@ -61,22 +61,12 @@ namespace MooseDrive.Mobile.App.Services.Implementations
             });
         }
 
-
-        private void Driver_OnResponseToMessage(object sender, Messages.ELMMessage e)
+        private void Driver_OnResponse(object sender, OBDResponse e)
         {
-            var value = 0;
-            if (e.GetResult() is int v) {
-                value = v;
-            }
-            var model = new OBDResponse
-            {
-                Code = e.Message,
-                Response = e.LastInput,
-                Value = value,
-                Timestamp = DateTimeOffset.Now,
-                SessionId = sessionId,
-                SequenceId = obdSeqId++
-            };
+            var model = e.ReturnAs<OBDResponse>();
+            model.SessionId = sessionId;
+            model.SequenceId = obdSeqId++;
+
             if (obdSeqId == long.MaxValue || locationSeqId == long.MaxValue)
             {
                 sessionId = IdExtensions.GenerateId();
