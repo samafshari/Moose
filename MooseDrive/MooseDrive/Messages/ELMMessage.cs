@@ -13,6 +13,7 @@ namespace MooseDrive.Messages
         protected virtual object Result { get; set; }
         public string LastInput { get; set; }
         public bool IsSending { get; set; }
+        public bool IsResponseValid { get; set; }
 
         public virtual object GetResult()
         {
@@ -22,6 +23,11 @@ namespace MooseDrive.Messages
         public virtual bool ProcessResponse(string response)
         {
             return response == ExpectedResponse || IsResponseMine(response);
+        }
+
+        public virtual void ValidateResponse(string response)
+        {
+            IsResponseValid = true;
         }
 
         public bool IsResponseMine(string response)
@@ -67,6 +73,15 @@ namespace MooseDrive.Messages
             var integer = int.Parse(hex, System.Globalization.NumberStyles.HexNumber);
             Result = integer;
             return true;
+        }
+
+        public override void ValidateResponse(string response)
+        {
+            IsResponseValid = false;
+            if (string.IsNullOrWhiteSpace(response))
+                return;
+
+            IsResponseValid = response.Trim().Split(' ').All(x => x.Length == 2);
         }
     }
 

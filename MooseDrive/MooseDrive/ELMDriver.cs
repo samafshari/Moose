@@ -115,13 +115,18 @@ namespace MooseDrive
                 {
                     if (handler.ProcessResponse(message))
                     {
+                        handler.ValidateResponse(message);
                         handler.IsSending = false;
                         handler.LastInput = message;
-                        if (handler is RPM rpm) RPM = rpm.Result;
-                        else if (handler is Speed speed) Speed = speed.Result;
-                        else if (handler is MAF maf) MAF = maf.Result;
-                        else if (handler is EngineLoad load) EngineLoad = load.Result;
+                        if (handler.IsResponseValid)
+                        {
+                            if (handler is RPM rpm) RPM = rpm.Result;
+                            else if (handler is Speed speed) Speed = speed.Result;
+                            else if (handler is MAF maf) MAF = maf.Result;
+                            else if (handler is EngineLoad load) EngineLoad = load.Result;
+                        }
                         response.Code = handler.Message;
+                        response.IsResponseValid = handler.IsResponseValid;
                         if (handler is ELMIntMessage elmInt) response.Value = elmInt.Result;
                         OnResponseToMessage?.Invoke(this, handler);
                         processed = true;

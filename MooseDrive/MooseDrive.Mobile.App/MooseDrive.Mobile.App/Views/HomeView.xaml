@@ -63,21 +63,22 @@
             </Grid>
         </rf:TitledGroup.TitleView>
         <Grid>
-            <StackLayout>
-                <StackLayout.Resources>
-                    <ResourceDictionary>
-                        <Style TargetType="Label">
-                            <Setter Property="FontSize" Value="32" />
-                        </Style>
-                    </ResourceDictionary>
-                </StackLayout.Resources>
-                <Label Text="{Binding RPM, StringFormat='RPM: {0}'}" />
-                <Label Text="{Binding Speed, StringFormat='SPEED: {0}'}" />
-                <Label Text="{Binding MAF, StringFormat='MAF: {0}'}" />
-                <Label Text="{Binding EngineLoad, StringFormat='LOAD: {0}'}" />
-                <Label Text="{Binding Last, StringFormat='Last: {0}'}" />
-            </StackLayout>
-
+            <ScrollView>
+                <StackLayout>
+                    <StackLayout.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="Label">
+                                <Setter Property="FontSize" Value="32" />
+                            </Style>
+                        </ResourceDictionary>
+                    </StackLayout.Resources>
+                    <Label Text="{Binding RPM, StringFormat='RPM: {0}'}" />
+                    <Label Text="{Binding Speed, StringFormat='SPEED: {0}'}" />
+                    <Label Text="{Binding MAF, StringFormat='MAF: {0}'}" />
+                    <Label Text="{Binding EngineLoad, StringFormat='LOAD: {0}'}" />
+                    <Label Text="{Binding Last, StringFormat='LAST: {0}'}" />
+                </StackLayout>
+            </ScrollView>
             <rf:ContentView2 FixBottomPadding="True" InputTransparent="True" CascadeInputTransparent="False" VerticalOptions="End">
                 <StackLayout 
                     Orientation="Horizontal" 

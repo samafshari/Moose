@@ -39,7 +39,7 @@ namespace MooseDrive.Mobile.App.Services.Implementations
                 }
                 catch { }
                 var opTime = (DateTime.Now - dt).TotalSeconds;
-                double delay = 5;
+                double delay = 2;
                 if (opTime < delay) await Task.Delay(TimeSpan.FromSeconds(delay - opTime));
             }
         }

@@ -18,5 +18,6 @@ namespace MooseDrive.Models
         public double Longitude { get; set; }
         public DateTimeOffset LocationTimestamp { get; set; }
         public DateTimeOffset Timestamp { get; set; }
+        public bool IsResponseValid { get; set; }
     }
 }

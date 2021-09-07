@@ -17,5 +17,7 @@ namespace MooseDrive.Interfaces
         double Latitude { get; }
         double Longitude { get; }
         DateTimeOffset LocationTimestamp { get; }
+
+        bool IsResponseValid { get; }
     }
 }
