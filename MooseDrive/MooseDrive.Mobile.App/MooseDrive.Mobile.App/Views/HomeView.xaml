@@ -24,7 +24,9 @@
                     Text="New Session"
                     IsVisible="{Binding IsConnected}"
                     Command="{Binding NewSessionCommand}"
-                    VerticalOptions="Center" />
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Start"
+                    WidthRequest="100"/>
                 <StackLayout
                     HorizontalOptions="End"
                     VerticalOptions="Center"
