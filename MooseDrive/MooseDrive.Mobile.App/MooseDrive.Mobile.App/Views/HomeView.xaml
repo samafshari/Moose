@@ -20,6 +20,11 @@
                     TextColor="{StaticResource Color5}"
                     Text="Not Connected"
                     IsVisible="{Binding IsConnected, Converter={Static rfc:NotConverter.Instance}}" />
+                <Button
+                    Text="New Session"
+                    IsVisible="{Binding IsConnected}"
+                    Command="{Binding NewSessionCommand}"
+                    VerticalOptions="Center" />
                 <StackLayout
                     HorizontalOptions="End"
                     VerticalOptions="Center"
@@ -68,7 +73,7 @@
                     <StackLayout.Resources>
                         <ResourceDictionary>
                             <Style TargetType="Label">
-                                <Setter Property="FontSize" Value="32" />
+                                <Setter Property="FontSize" Value="24" />
                             </Style>
                         </ResourceDictionary>
                     </StackLayout.Resources>

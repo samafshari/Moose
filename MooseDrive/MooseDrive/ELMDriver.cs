@@ -26,6 +26,8 @@ namespace MooseDrive
         public int MAF { get; private set; }
         public int EngineLoad { get; private set; }
 
+        public ConcurrentDictionary<string, string> RecentMessages { get; } = new ConcurrentDictionary<string, string>();
+
         readonly List<ELMMessage> handlers = new List<ELMMessage>();
 
         public readonly List<ELMMessage> LoopMessages = new List<ELMMessage>
@@ -35,6 +37,8 @@ namespace MooseDrive
             new MAF(),
             new EngineLoad()
         };
+
+        public List<string> CustomMessages = new List<string>();
 
         readonly List<ELMMessage> initializationSequence = new List<ELMMessage>
         {
@@ -128,6 +132,7 @@ namespace MooseDrive
                         response.Code = handler.Message;
                         response.IsResponseValid = handler.IsResponseValid;
                         if (handler is ELMIntMessage elmInt) response.Value = elmInt.Result;
+                        RecentMessages[response.Code] = response.Response;
                         OnResponseToMessage?.Invoke(this, handler);
                         processed = true;
                         break;
@@ -160,6 +165,18 @@ namespace MooseDrive
         public async Task UpdateAsync()
         {
             await RunSequenceAsync(LoopMessages, TimeSpan.Zero);
+            foreach (var item in CustomMessages)
+            {
+                try
+                {
+                    var msg = new ELMIntMessage(item);
+                    await SendAsync(msg);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
         }
 
         public async Task RunSequenceAsync(IEnumerable<ELMMessage> messages, TimeSpan delay)

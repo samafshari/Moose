@@ -5,6 +5,7 @@ using RedCorners.Forms;
 using RedCorners.Models;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,8 @@ namespace MooseDrive.Mobile.App.ViewModels
         public IBluetoothService BluetoothService { get; }
         public ISettingsService SettingsService { get; }
         public IDatabaseService DatabaseService { get; }
+        public ISessionService SessionService { get; }
+
         public bool IsConnected { get; set; } = false;
         public string DeviceName => device?.Name;
 
@@ -61,6 +64,7 @@ namespace MooseDrive.Mobile.App.ViewModels
             BluetoothService = DependencyService.Get<IBluetoothService>();
             SettingsService = DependencyService.Get<ISettingsService>();
             DatabaseService = DependencyService.Get<IDatabaseService>();
+            SessionService = DependencyService.Get<ISessionService>();
 
             Status = TaskStatuses.Success;
 
@@ -127,14 +131,30 @@ namespace MooseDrive.Mobile.App.ViewModels
 
         async Task LastAsync()
         {
+            if (BluetoothService?.Device?.Driver?.RecentMessages == null)
+                return;
+
             var count = await DatabaseService.ELMLogger.CountAsync();
             var last = await DatabaseService.ELMLogger.GetLastAsync();
 
             Last = $"Count: {count}\n" +
+                $"{DicToStr(BluetoothService.Device.Driver.RecentMessages)}\n" +
                 $"Last: {last.SequenceId}, {last.Code}, {last.Response}, {last.Timestamp}\n" +
                 $"{last.Latitude}, {last.Longitude}, {last.LocationTimestamp}\n" +
                 $"{last.Timestamp - last.LocationTimestamp}";
             RaisePropertyChanged(nameof(Last));
+        }
+
+        string DicToStr(ConcurrentDictionary<string, string> s)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in s)
+            {
+                sb.Append(item.Key);
+                sb.Append(": ");
+                sb.AppendLine(item.Value);
+            }
+            return sb.ToString();
         }
 
         public Command SettingsCommand => new Command(async () =>
@@ -145,6 +165,15 @@ namespace MooseDrive.Mobile.App.ViewModels
         public Command ExportCommand => new Command(async () =>
         {
             await App.Instance.ShowPopupAsync(new Views.ExportDatabasePopup());
+        });
+
+        public Command NewSessionCommand => new Command(async () =>
+        {
+            var ask = await App.Instance.DisplayAlertAsync("New Session", "Start a new session?", "Yes", "No");
+            if (ask)
+            {
+                SessionService.NewSession();
+            }
         });
     }
 }

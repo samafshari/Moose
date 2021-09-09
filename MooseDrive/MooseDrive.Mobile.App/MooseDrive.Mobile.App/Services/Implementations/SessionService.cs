@@ -18,16 +18,20 @@ namespace MooseDrive.Mobile.App.Services.Implementations
     {
         readonly IDatabaseService databaseService;
         readonly ILocationService locationService;
+        readonly ISettingsService settingsService;
         readonly IBluetoothService bluetoothService;
         string sessionId;
         long obdSeqId;
         long locationSeqId;
+
+        ELMDevice device;
 
         public SessionService()
         {
             databaseService = DependencyService.Get<IDatabaseService>();
             locationService = DependencyService.Get<ILocationService>();
             bluetoothService = DependencyService.Get<IBluetoothService>();
+            settingsService = DependencyService.Get<ISettingsService>();
         }
 
         public void Setup()
@@ -40,12 +44,8 @@ namespace MooseDrive.Mobile.App.Services.Implementations
 
         private void BluetoothService_Connected(object sender, ELMDevice e)
         {
-            sessionId = DateTime.Now.ToString("yy-MM-dd-HH-mm_" + IdExtensions.GenerateId());
-            obdSeqId = 0;
-            locationSeqId = 0;
-            databaseService.Use(sessionId);
-
-            Task.Run(databaseService.Db.CompactAsync);
+            device = e;
+            NewSession();
 
             e.Driver.OnResponse += Driver_OnResponse;
             Device.BeginInvokeOnMainThread(async () =>
@@ -53,8 +53,21 @@ namespace MooseDrive.Mobile.App.Services.Implementations
                 await locationService.StartAsync();
             });
         }
+
+        public void NewSession()
+        {
+            if (device == null) return;
+            device.Driver.CustomMessages = settingsService.Settings.CustomMessages;
+            Task.Run(databaseService.Db.CompactAsync);
+            sessionId = DateTime.Now.ToString("yy-MM-dd-HH-mm_" + IdExtensions.GenerateId());
+            obdSeqId = 0;
+            locationSeqId = 0;
+            databaseService.Use(sessionId);
+        }
+
         private void BluetoothService_Disconnected(object sender, ELMDevice e)
         {
+            device = null;
             Device.BeginInvokeOnMainThread(async () =>
             {
                 await locationService.StopAsync();

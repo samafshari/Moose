@@ -8,7 +8,7 @@ namespace MooseDrive.Messages
     // https://python-obd.readthedocs.io/en/latest/Command%20Tables/
     public abstract class ELMMessage
     {
-        public virtual string Message { get; }
+        public virtual string Message { get; protected set; }
         public virtual string ExpectedResponse { get; } = "OK";
         protected virtual object Result { get; set; }
         public string LastInput { get; set; }
@@ -59,8 +59,11 @@ namespace MooseDrive.Messages
         }
     }
 
-    public abstract class ELMIntMessage : ELMMessage<int>
+    public class ELMIntMessage : ELMMessage<int>
     {
+        public override string Message { get; protected set; }
+        public ELMIntMessage() { }
+        public ELMIntMessage(string message) { Message = message; }
         public override bool ProcessResponse(string response)
         {
             if (!IsResponseMine(response)) return false;
@@ -87,37 +90,37 @@ namespace MooseDrive.Messages
 
     public class ATE0 : ELMMessage
     {
-        public override string Message { get; } = "AT E0";
+        public override string Message { get; protected set; } = "AT E0";
     }
 
     public class ATL0 : ELMMessage
     {
-        public override string Message { get; } = "AT L0";
+        public override string Message { get; protected set; } = "AT L0";
     }
 
     public class ATST00 : ELMMessage
     {
-        public override string Message { get; } = "AT ST 00";
+        public override string Message { get; protected set; } = "AT ST 00";
     }
 
     public class ATSP00 : ELMMessage
     {
-        public override string Message { get; } = "AT SP 00";
+        public override string Message { get; protected set; } = "AT SP 00";
     }
     
     public class _0100 : ELMMessage
     {
-        public override string Message { get; } = "01 00";
+        public override string Message { get; protected set; } = "01 00";
     }
 
     public class ATZ : ELMStringMessage
     {
-        public override string Message { get; } = "ATZ";
+        public override string Message { get; protected set; } = "ATZ";
     }
 
     public class EngineLoad : ELMIntMessage
     {
-        public override string Message { get; } = "01 04";
+        public override string Message { get; protected set; } = "01 04";
 
         public override bool ProcessResponse(string response)
         {
@@ -133,7 +136,7 @@ namespace MooseDrive.Messages
 
     public class CoolantTemp : ELMIntMessage
     {
-        public override string Message { get; } = "01 05";
+        public override string Message { get; protected set; } = "01 05";
 
         public override bool ProcessResponse(string response)
         {
@@ -149,7 +152,7 @@ namespace MooseDrive.Messages
 
     public class FuelPressure : ELMIntMessage
     {
-        public override string Message { get; } = "01 0A";
+        public override string Message { get; protected set; } = "01 0A";
 
         public override bool ProcessResponse(string response)
         {
@@ -165,12 +168,12 @@ namespace MooseDrive.Messages
 
     public class IntakePressure : ELMMessage<int>
     {
-        public override string Message { get; } = "01 0B";
+        public override string Message { get; protected set; } = "01 0B";
     }
 
     public class RPM : ELMIntMessage
     {
-        public override string Message { get; } = "01 0C";
+        public override string Message { get; protected set; } = "01 0C";
 
         public override bool ProcessResponse(string response)
         {
@@ -186,17 +189,17 @@ namespace MooseDrive.Messages
 
     public class Speed : ELMIntMessage
     {
-        public override string Message { get; } = "01 0D";
+        public override string Message { get; protected set; } = "01 0D";
     }
 
     //public class TimingAdvance : ELMMessage<int>
     //{
-    //    public override string Message { get; } = "010E";
+    //    public override string Message { get; protected set; } = "010E";
     //}
 
     public class IntakeTemp : ELMIntMessage
     {
-        public override string Message { get; } = "01 0F";
+        public override string Message { get; protected set; } = "01 0F";
 
         public override bool ProcessResponse(string response)
         {
@@ -212,7 +215,7 @@ namespace MooseDrive.Messages
 
     public class MAF : ELMIntMessage
     {
-        public override string Message { get; } = "01 10";
+        public override string Message { get; protected set; } = "01 10";
 
         public override bool ProcessResponse(string response)
         {
@@ -228,6 +231,6 @@ namespace MooseDrive.Messages
 
     public class ThrottlePos : ELMIntMessage
     {
-        public override string Message { get; } = "01 11";
+        public override string Message { get; protected set; } = "01 11";
     }
 }

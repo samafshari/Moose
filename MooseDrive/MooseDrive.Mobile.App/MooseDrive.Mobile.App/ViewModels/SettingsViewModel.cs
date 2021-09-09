@@ -28,7 +28,16 @@ namespace MooseDrive.Mobile.App.ViewModels
             settingsService = DependencyService.Get<ISettingsService>();
 
             Status = TaskStatuses.Success;
-            Sessions = databaseService.ListAll().Select(x => new SessionViewModel(x)).ToList();
+            Refresh();
+        }
+
+        public override void Refresh()
+        {
+            Sessions = databaseService.ListAll().Select(x => new SessionViewModel(x)
+            {
+                UpdateAction = Refresh
+            }).ToList();
+            CustomMessages = string.Join(",", settingsService.Settings.CustomMessages ?? new List<string>());
         }
 
         public bool AutoConnect
@@ -42,7 +51,9 @@ namespace MooseDrive.Mobile.App.ViewModels
             }
         }
 
-        public List<SessionViewModel> Sessions { get; }
+        public string CustomMessages { get; set; }
+
+        public List<SessionViewModel> Sessions { get; set; }
 
         public string LastDeviceName => settingsService.Settings.LastDeviceName;
 
@@ -111,6 +122,15 @@ namespace MooseDrive.Mobile.App.ViewModels
         public Command DismissCommand => new Command(async () =>
         {
             await App.Instance.PopAllPopupAsync();
+            if (CustomMessages == null)
+            {
+                settingsService.Settings.CustomMessages = new List<string>();
+            }
+            else
+            {
+                settingsService.Settings.CustomMessages =
+                    CustomMessages.ToUpper().Trim().Split(',').ToList();
+            }
             settingsService.Save();
         });
     }

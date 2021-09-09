@@ -39,11 +39,16 @@
                         Text="{Binding LastDeviceName, StringFormat='Auto connect to: {0}'}"
                         FontAttributes="Italic"
                         Opacity="0.5" />
-                    
+
+                    <Editor
+                        Text="{Binding CustomMessages}" />
+
                     <Grid HeightRequest="8" />
                     <Button Text="Export Database..." Command="{Binding ExportDatabaseCommand}" />
                     <Button Text="Import Database..." Command="{Binding ImportDatabaseCommand}" />
                     <Button Text="Close" Command="{Binding DismissCommand}" />
+
+                    <Label Text="01 05: Cooland temp, 06 Short term fuel trim bank 1, 07: Long, 08: Short bank 2, 09: Long bank 2, 0A: Fuel guage pressure, 0B intake manifold absolute pressure, 0E timing advance, 0F intake air pressure, 11: Throttle position, 12: commanded secondary air stats, 13: Oxygen sensors, 1C obd standards vehicle conforms to, 1F run time since engine start, 22: fuel rail pressure, 2F fuel tank level output, 31 distance traveled since codes cleared, 32 evap system pres., 33 absolute barometric pressure, 45 relative throttle pos, 46 ambient air temp, 4F max value for FAer, 50 max MAF, 51 fuel type, 52 ethanol %, 5D fuel injection timing, A6 odometer" />
                 </StackLayout>
             </ScrollView>
         </rf:Frame2>

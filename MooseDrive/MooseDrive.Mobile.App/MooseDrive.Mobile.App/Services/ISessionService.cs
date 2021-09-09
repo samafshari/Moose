@@ -7,5 +7,6 @@ namespace MooseDrive.Mobile.App.Services
     public interface ISessionService
     {
         void Setup();
+        void NewSession();
     }
 }
