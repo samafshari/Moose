@@ -38,6 +38,8 @@ namespace MooseDrive.Mobile.App.ViewModels
                 UpdateAction = Refresh
             }).ToList();
             CustomMessages = string.Join(",", settingsService.Settings.CustomMessages ?? new List<string>());
+
+            UpdateProperties();
         }
 
         public bool AutoConnect
