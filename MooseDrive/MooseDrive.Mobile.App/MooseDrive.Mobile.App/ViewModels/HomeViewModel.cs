@@ -18,7 +18,8 @@ namespace MooseDrive.Mobile.App.ViewModels
 {
     public class HomeViewModel : BindableModel
     {
-        ELMDevice device;
+        public static HomeViewModel Instance { get; private set; }
+        public ELMDevice device;
 
         public IBluetoothService BluetoothService { get; }
         public ISettingsService SettingsService { get; }
@@ -27,7 +28,7 @@ namespace MooseDrive.Mobile.App.ViewModels
 
         public bool IsConnected { get; set; } = false;
         public string DeviceName => device?.Name;
-
+        public bool IsPaused => device?.Driver?.IsPaused ?? false;
         public int RPM { get; private set; }
         public int Speed { get; private set; }
         public int MAF { get; private set; }
@@ -59,6 +60,7 @@ namespace MooseDrive.Mobile.App.ViewModels
 
         public HomeViewModel()
         {
+            Instance = this;
             RaisePropertyChangeOnUI = true;
 
             BluetoothService = DependencyService.Get<IBluetoothService>();
@@ -174,6 +176,23 @@ namespace MooseDrive.Mobile.App.ViewModels
             {
                 SessionService.NewSession();
             }
+        });
+
+        public Command TerminalCommand => new Command(async () =>
+        {
+            await App.Instance.ShowModalPageAsync(new Views.TerminalPage());
+        });
+
+        public Command PauseCommand => new Command(() =>
+        {
+            device.Driver.IsPaused = true;
+            UpdateProperties();
+        });
+
+        public Command ResumeCommand => new Command(() =>
+        {
+            device.Driver.IsPaused = false;
+            UpdateProperties();
         });
     }
 }

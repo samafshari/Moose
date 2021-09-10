@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using MooseDrive.Models;
+using System.Collections.ObjectModel;
 
 namespace MooseDrive
 {
@@ -17,9 +18,12 @@ namespace MooseDrive
         public event EventHandler<ELMMessage> OnResponseToMessage;
         public event EventHandler OnUpdate;
         public event EventHandler<OBDResponse> OnResponse;
+        public event EventHandler<OBDLog> OnLog;
 
         volatile bool isSending = false;
         readonly ConcurrentQueue<ELMMessage> queue = new ConcurrentQueue<ELMMessage>();
+
+        public bool IsPaused { get; set; } = true;
 
         public int RPM { get; private set; }
         public int Speed { get; private set; }
@@ -48,6 +52,8 @@ namespace MooseDrive
             new _0100()
             //new ATST00(),
         };
+
+        public readonly ConcurrentQueue<string> InteractiveQueue = new ConcurrentQueue<string>();
 
         bool expectingEcho = false;
 
@@ -99,6 +105,13 @@ namespace MooseDrive
                 }
                 return;
             }
+
+            OnLog?.Invoke(this, new OBDLog
+            {
+                Data = message,
+                IsOutgoing = false,
+                Timestamp = DateTimeOffset.Now
+            });
 
             if (expectingEcho)
             {
@@ -164,17 +177,42 @@ namespace MooseDrive
 
         public async Task UpdateAsync()
         {
-            await RunSequenceAsync(LoopMessages, TimeSpan.Zero);
-            foreach (var item in CustomMessages)
+            if (IsPaused)
+                await Task.Delay(10);
+            else
+            {
+                await RunSequenceAsync(LoopMessages, TimeSpan.Zero);
+                foreach (var item in CustomMessages)
+                {
+                    try
+                    {
+                        var msg = new ELMIntMessage(item);
+                        await SendAsync(msg);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                }
+            }
+            while (!InteractiveQueue.IsEmpty)
             {
                 try
                 {
-                    var msg = new ELMIntMessage(item);
-                    await SendAsync(msg);
+                    if (InteractiveQueue.TryDequeue(out var message))
+                    {
+                        OnLog?.Invoke(this, new OBDLog
+                        {
+                            Data = message,
+                            IsOutgoing = true,
+                            Timestamp = DateTimeOffset.Now
+                        });
+                        await WriteAsync(message.Trim() + "\r");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+
                 }
             }
         }
@@ -218,6 +256,12 @@ namespace MooseDrive
                         messageBuffer.Clear();
                         handlers.RemoveAll(x => x.GetType() == message.GetType());
                         handlers.Add(message);
+                        OnLog?.Invoke(this, new OBDLog
+                        {
+                            Data = message.Message,
+                            IsOutgoing = true,
+                            Timestamp = DateTimeOffset.Now
+                        });
                         await WriteAsync(message.Message + "\r");
                     }
                     else break;

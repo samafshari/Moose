@@ -20,13 +20,33 @@
                     TextColor="{StaticResource Color5}"
                     Text="Not Connected"
                     IsVisible="{Binding IsConnected, Converter={Static rfc:NotConverter.Instance}}" />
-                <Button
-                    Text="New Session"
-                    IsVisible="{Binding IsConnected}"
-                    Command="{Binding NewSessionCommand}"
-                    VerticalOptions="Center" 
-                    HorizontalOptions="Start"
-                    WidthRequest="100"/>
+                
+                <StackLayout Spacing="12" Orientation="Horizontal" IsVisible="{Binding IsConnected}" VerticalOptions="Center">
+                    <StackLayout.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="rf:ImageButton2">
+                                <Setter Property="VerticalOptions" Value="Center" />
+                                <Setter Property="WidthRequest" Value="32" />
+                                <Setter Property="HeightRequest" Value="32" />
+                                <Setter Property="ImageMargin" Value="3" />
+                            </Style>
+                        </ResourceDictionary>
+                    </StackLayout.Resources>
+                    <rf:ImageButton2
+                        Command="{Binding NewSessionCommand}"
+                        Source="new1"/>
+                    <rf:ImageButton2
+                        Command="{Binding PauseCommand}"
+                        Source="pause"
+                        IsVisible="{Binding IsPaused, Converter={Static rfc:NotConverter.Instance}}"/>
+                    <rf:ImageButton2
+                        Command="{Binding ResumeCommand}"
+                        Source="play"
+                        IsVisible="{Binding IsPaused}"/>
+                    <rf:ImageButton2
+                        Command="{Binding TerminalCommand}"
+                        Source="interactive"/>
+                </StackLayout>
                 <StackLayout
                     HorizontalOptions="End"
                     VerticalOptions="Center"
