@@ -210,21 +210,21 @@ namespace MooseDrive.Logger.Android.Plugins
             {
                 try
                 {
-                    locationMode = Android.Provider.Settings.Secure.GetInt(
+                    locationMode = global::Android.Provider.Settings.Secure.GetInt(
                         Application.Context.ContentResolver,
-                        Android.Provider.Settings.Secure.LocationMode);
+                        global::Android.Provider.Settings.Secure.LocationMode);
                 }
                 catch (Exception)
                 {
                     return false;
                 }
-                return locationMode != (int)Android.Provider.SecurityLocationMode.Off;
+                return locationMode != (int)global::Android.Provider.SecurityLocationMode.Off;
             }
             else
             {
-                locationProviders = Android.Provider.Settings.Secure.GetString(
+                locationProviders = global::Android.Provider.Settings.Secure.GetString(
                     Application.Context.ContentResolver,
-                    Android.Provider.Settings.Secure.LocationProvidersAllowed);
+                    global::Android.Provider.Settings.Secure.LocationProvidersAllowed);
                 return !string.IsNullOrEmpty(locationProviders);
             }
         }
@@ -242,7 +242,7 @@ namespace MooseDrive.Logger.Android.Plugins
     public class GoogleCallbacks : Java.Lang.Object,
                                    GoogleApiClient.IConnectionCallbacks,
                                    GoogleApiClient.IOnConnectionFailedListener,
-                                   Android.Gms.Location.ILocationListener
+                                   global::Android.Gms.Location.ILocationListener
     {
         public EventHandler<Bundle> Connected;
         public EventHandler<ConnectionResult> ConnectionFailed;

@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DateExtensions.cs" />
-    <Compile Include="LocationRecorder.cs" />
+    <Compile Include="LocationListener.cs" />
     <Compile Include="LocationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

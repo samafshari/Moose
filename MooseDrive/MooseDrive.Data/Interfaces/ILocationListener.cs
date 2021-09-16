@@ -4,9 +4,9 @@ using Plugin.Geolocator.Abstractions;
 
 namespace MooseDrive.Interfaces
 {
-    public interface ILocationRecorder
+    public interface ILocationListener
     {
-        bool IsRecording { get; }
+        bool IsListening { get; }
         
         event EventHandler<Position> OnPositionChange;
         event EventHandler<bool> OnStatusChange;

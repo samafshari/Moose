@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(LocationRecorder))]
+[assembly: Dependency(typeof(LocationListener))]
 namespace MooseDrive.Logger.iOS
 {
-    public class LocationRecorder : ILocationRecorder
+    public class LocationListener : ILocationListener
     {
         public static TimeSpan LocationMinTime => TimeSpan.FromSeconds(30); //ms
         public const double LocationMinDistance = 10; 
@@ -30,19 +30,19 @@ namespace MooseDrive.Logger.iOS
 
         LocationService locationService;
 
-        public bool IsRecording => locationService != null;
+        public bool IsListening => locationService != null;
 
         public event EventHandler<Position> OnPositionChange;
         public event EventHandler<bool> OnStatusChange;
 
-        public LocationRecorder()
+        public LocationListener()
         {
         }
 
 
         public async Task StartAsync()
         {
-            if (IsRecording) return;
+            if (IsListening) return;
             locationService = new LocationService();
             locationService.PositionChanged += LocationService_PositionChanged;
             await locationService.StartListeningAsync(
@@ -50,14 +50,16 @@ namespace MooseDrive.Logger.iOS
                 LocationMinDistance,
                 false,
                 ListenerSettings);
+            OnStatusChange?.Invoke(this, true);
         }
         
         public async Task StopAsync()
         {
-            if (!IsRecording) return;
+            if (!IsListening) return;
             await locationService.StopListeningAsync();
             locationService.PositionChanged -= LocationService_PositionChanged;
             locationService = null;
+            OnStatusChange?.Invoke(this, false);
         }
 
         void LocationService_PositionChanged(object sender, PositionEventArgs e)
