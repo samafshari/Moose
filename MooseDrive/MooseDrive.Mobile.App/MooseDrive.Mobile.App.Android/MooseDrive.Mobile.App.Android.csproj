@@ -96,6 +96,10 @@
     <Folder Include="Resources\drawable\xxhdpi\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MooseDrive.Logger.Android\MooseDrive.Logger.Android.csproj">
+      <Project>{dff3b1d0-2f24-4082-b488-b23efe4e5be0}</Project>
+      <Name>MooseDrive.Logger.Android</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MooseDrive.Mobile.App\MooseDrive.Mobile.App.csproj">
       <Project>{BCFA81E4-85D0-4F26-B486-892942EB81A0}</Project>
       <Name>MooseDrive.Mobile.App</Name>

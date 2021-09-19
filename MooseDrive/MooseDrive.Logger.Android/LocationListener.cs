@@ -1,124 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Android.Util;
-using Plugin.Geolocator;
 
-using ALocationManager = Android.Locations.LocationManager;
-using Android.Gms.Common.Apis;
-using Android.Gms.Location;
-using Android.Support.V4.App;
+using MooseDrive.Interfaces;
+using MooseDrive.Logger.Android;
 
 using Plugin.Geolocator.Abstractions;
-using MooseDrive.Logger.Android.Plugins;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Xamarin.Forms;
+
+[assembly: Dependency(typeof(LocationListener))]
 namespace MooseDrive.Logger.Android
 {
-    public class LocationListener
+    public class LocationListener : ILocationListener
     {
-        public static TimeSpan LocationMinTime => TimeSpan.FromSeconds(30); //ms
-        public const double LocationMinDistance = 10;
-        public const double MaxAcceptableAccuracy = 30;
-        public const double MinAcceptableSpeed = 1;
-        public static ListenerSettings ListenerSettings => new ListenerSettings
+        public bool IsListening => LocationListenerService.Instance != null;
+
+        public event EventHandler<Position> OnPositionChange;
+        public event EventHandler<bool> OnStatusChange;
+
+        public static string ChannelId = "MooseDrive";
+        public static string Title = "MooseDrive";
+        public static string Text = "Location monitoring is active";
+        public static int SmallIcon = 0;
+
+        public Task StartAsync()
         {
-            AllowBackgroundUpdates = true,
-            PauseLocationUpdatesAutomatically = false,
-            DeferralDistanceMeters = LocationMinDistance,
-            DeferLocationUpdates = false
-        };
-
-        public void Log(string s, [CallerMemberName] string m = null) => Console.WriteLine($"[LocationListener] [{m}] {s}");
-
-        public event EventHandler<PositionEventArgs> OnLocation;
-
-        Context context;
-
-        ALocationManager locationManager;
-        GeolocationContinuousListener listener;
-        string[] Providers => Manager.GetProviders(enabledOnly: false).ToArray();
-        static int instanceCount = 0;
-
-        ALocationManager Manager
-        {
-            get
-            {
-                if (locationManager == null)
-                    locationManager = (ALocationManager)context.GetSystemService(Context.LocationService);
-                return locationManager;
-            }
+            return StartAsync(Title, Text, ChannelId, SmallIcon);
         }
 
-        public LocationListener(Context context)
+        public Task StartAsync(string title, string text, string channelId, int smallIcon)
         {
-            this.context = context;
-        }
-
-        public bool StartLocationListener()
-        {
-            if (instanceCount > 0) return false;
-            instanceCount++;
-            Log($"Location Service Started.");
-
-            var minTimeMilliseconds = LocationMinTime.TotalMilliseconds;
-
-            var providers = Providers;
-            listener = new GeolocationContinuousListener(Manager, LocationMinTime, providers);
-            listener.PositionChanged += Locator_PositionChanged;
-
-            Looper looper = Looper.MyLooper() ?? Looper.MainLooper;
-            for (int i = 0; i < providers.Length; ++i)
+            if (!IsListening)
             {
-                if (providers[i] != ALocationManager.GpsProvider) continue;
-
-                Log($"Found Provider: {providers[i]}");
-
-                Manager.RequestLocationUpdates(providers[i],
-                    (long)LocationMinTime.TotalMilliseconds,
-                    (float)LocationMinDistance,
-                    listener,
-                    looper);
-            }
-
-            return true;
-        }
-
-        public bool StopLocationListener()
-        {
-            if (instanceCount <= 0) return false;
-            try
-            {
-                instanceCount--;
-
-                var providers = Providers;
-                listener.PositionChanged -= Locator_PositionChanged;
-                for (int i = 0; i < providers.Length; ++i)
+                Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    if (providers[i] != ALocationManager.GpsProvider) continue;
-                    Manager.RemoveUpdates(listener);
-                }
+                    LocationListenerService.StartService(title, text, channelId, smallIcon);
+                });
             }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-            }
-
-            return true;
+            return Task.CompletedTask;
         }
 
-        void Locator_PositionChanged(object sender, PositionEventArgs e)
+        public Task StopAsync()
         {
-            Log($"{e.Position.Latitude}, {e.Position.Longitude}");
-            OnLocation?.Invoke(sender, e);
+            if (IsListening)
+            {
+                Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    LocationListenerService.Instance.StopSelf();
+                });
+            }
+            return Task.CompletedTask;
         }
     }
 }

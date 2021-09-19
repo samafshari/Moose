@@ -16,9 +16,9 @@ namespace MooseDrive.Logger.Android
 {
     internal static class NotificationExtensions
     {
-        public static NotificationCompat.Builder Customize(this NotificationCompat.Builder builder, Type activityType, Context context, IDictionary<string, string> intentParams = null)
+        public static NotificationCompat.Builder Customize(this NotificationCompat.Builder builder, Activity activity, Context context, IDictionary<string, string> intentParams = null)
         {
-            var intent = new Intent(context, activityType);
+            var intent = new Intent(context, activity.GetType());
             intent.AddFlags(ActivityFlags.ClearTop);
             if (intentParams != null)
             {

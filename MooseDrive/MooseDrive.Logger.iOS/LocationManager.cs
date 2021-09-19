@@ -15,7 +15,7 @@ using UIKit;
 
 namespace MooseDrive.Logger.iOS
 {
-    internal class LocationService : IGeolocator
+    internal class LocationManager : IGeolocator
     {
         bool deferringUpdates;
         readonly CLLocationManager manager;
@@ -23,7 +23,7 @@ namespace MooseDrive.Logger.iOS
         Position position;
         ListenerSettings listenerSettings;
 
-        public LocationService()
+        public LocationManager()
         {
             DesiredAccuracy = 100;
             manager = GetManager();

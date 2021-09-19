@@ -28,9 +28,9 @@ namespace MooseDrive.Logger.iOS
             DeferLocationUpdates = false
         };
 
-        LocationService locationService;
+        LocationManager locationManager;
 
-        public bool IsListening => locationService != null;
+        public bool IsListening => locationManager != null;
 
         public event EventHandler<Position> OnPositionChange;
         public event EventHandler<bool> OnStatusChange;
@@ -39,13 +39,12 @@ namespace MooseDrive.Logger.iOS
         {
         }
 
-
         public async Task StartAsync()
         {
             if (IsListening) return;
-            locationService = new LocationService();
-            locationService.PositionChanged += LocationService_PositionChanged;
-            await locationService.StartListeningAsync(
+            locationManager = new LocationManager();
+            locationManager.PositionChanged += LocationService_PositionChanged;
+            await locationManager.StartListeningAsync(
                 LocationMinTime,
                 LocationMinDistance,
                 false,
@@ -56,15 +55,20 @@ namespace MooseDrive.Logger.iOS
         public async Task StopAsync()
         {
             if (!IsListening) return;
-            await locationService.StopListeningAsync();
-            locationService.PositionChanged -= LocationService_PositionChanged;
-            locationService = null;
+            await locationManager.StopListeningAsync();
+            locationManager.PositionChanged -= LocationService_PositionChanged;
+            locationManager = null;
             OnStatusChange?.Invoke(this, false);
         }
 
         void LocationService_PositionChanged(object sender, PositionEventArgs e)
         {
             OnPositionChange?.Invoke(this, e.Position);
+        }
+
+        public Task StartAsync(string title, string text, string channelId, int smallIcon)
+        {
+            return StartAsync();
         }
     }
 }

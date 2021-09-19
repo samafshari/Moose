@@ -143,14 +143,20 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\..\MooseDrive.Logger.iOS\MooseDrive.Logger.iOS.csproj">
+      <Project>{03982adf-3c32-458e-a53a-e62810b119b0}</Project>
+      <Name>MooseDrive.Logger.iOS</Name>
+      <IsAppExtension>false</IsAppExtension>
+      <IsWatchApp>false</IsWatchApp>
+    </ProjectReference>
     <ProjectReference Include="..\MooseDrive.Mobile.App\MooseDrive.Mobile.App.csproj">
       <Project>{BCFA81E4-85D0-4F26-B486-892942EB81A0}</Project>
       <Name>MooseDrive.Mobile.App</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-	  <BundleResource Include="Resources\**\*.ttf" />
-	  <BundleResource Include="Resources\**\*.png" />
-	  <BundleResource Include="Resources\**\*.json" />
+    <BundleResource Include="Resources\**\*.ttf" />
+    <BundleResource Include="Resources\**\*.png" />
+    <BundleResource Include="Resources\**\*.json" />
   </ItemGroup>
 </Project>

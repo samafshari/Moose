@@ -12,6 +12,7 @@ namespace MooseDrive.Interfaces
         event EventHandler<bool> OnStatusChange;
 
         Task StartAsync();
+        Task StartAsync(string title, string text, string channelId, int smallIcon);
         Task StopAsync();
     }
 }

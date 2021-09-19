@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LocationListener.cs" />
+    <Compile Include="LocationManager.cs" />
     <Compile Include="LocationListenerService.cs" />
     <Compile Include="NotificationExtensions.cs" />
     <Compile Include="Plugins\FusedLocationGeolocatorInternal.cs" />

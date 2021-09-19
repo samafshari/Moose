@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Gms.Common;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -19,59 +20,113 @@ namespace MooseDrive.Logger.Android
 {
     public class LocationListenerService : Service
     {
+        LocationManager locationManager = null;
         public static LocationListenerService Instance { get; private set; }
 
-        Messenger messenger;
-        public Messenger ReplyToMessenger;
-        public bool IsForeground { get; private set; }
-        public string NotificationTitle { get; } = "Location Services";
-        public string NotificationText { get; } = "Monitoring location changes";
-        public string NotificationChannelId { get; }
-        public int NotificationSmallIcon { get; }
-        public Type ActivityType { get; }
-
-        public event EventHandler<Position> OnPositionChange;
-        public event EventHandler<bool> OnStatusChange;
-
-        public void Log(string s, [CallerMemberName] string m = null)
-            => Console.WriteLine($"[SensorService] [{m}] {s}");
-
-        public LocationListenerService()
+        public static void StartService(string title, string text, string channelId, int smallIcon)
         {
-            Instance = this;
+            var activity = Xamarin.Essentials.Platform.CurrentActivity;
+            StartService(activity, title, text, channelId, smallIcon);
         }
+
+        public static void StartService(Activity activity, string title, string text, string channelId, int smallIcon)
+        {
+            var intent = new Intent(activity, typeof(LocationListenerService));
+            intent.PutExtra(nameof(NotificationTitle), title);
+            intent.PutExtra(nameof(NotificationText), text);
+            intent.PutExtra(nameof(NotificationChannelId), channelId);
+            intent.PutExtra(nameof(NotificationSmallIcon), smallIcon);
+            activity.StartService(intent);
+        }
+
+        public static void CreateNotificationChannel(Activity activity, string channelId, string name, NotificationImportance importance)
+        {
+            if (IsPlayServicesAvailable(activity))
+                return;
+
+            // No need to create a channel for APIs less than O
+            if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+                return;
+
+            var channel = new NotificationChannel(channelId, name, importance);
+            channel.EnableLights(true);
+            channel.EnableVibration(true);
+            channel.LockscreenVisibility = NotificationVisibility.Public;
+            NotificationManager notificationManager =
+                (NotificationManager)activity.GetSystemService(NotificationService);
+            notificationManager.CreateNotificationChannel(channel);
+        }
+
+        public static bool IsPlayServicesAvailable(Activity activity)
+        {
+            int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(activity);
+            if (resultCode != ConnectionResult.Success)
+            {
+                if (GoogleApiAvailability.Instance.IsUserResolvableError(resultCode))
+                {
+                    Console.WriteLine($"IsPlayServicesAvailable: false, {GoogleApiAvailability.Instance.GetErrorString(resultCode)}");
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine($"IsPlayServicesAvailable: FALSE, This device is not supported. Finishing Activity, bye bye");
+                    activity.Finish();
+                }
+                return false;
+            }
+            else
+            {
+                Console.WriteLine($"IsPlayServicesAvailable: true, Google Play Services is available.");
+                return true;
+            }
+        }
+
+        public bool IsForeground { get; private set; }
+        public string NotificationTitle { get; set; } = "Location Services";
+        public string NotificationText { get; set; } = "Monitoring location changes";
+        public string NotificationChannelId { get; set; }
+        public int NotificationSmallIcon { get; set; }
+
+        public static event EventHandler<Position> OnPositionChange;
+        public static event EventHandler<bool> OnStatusChange;
+
+        public LocationListenerService() =>
+            Instance = this;
 
         public override IBinder OnBind(Intent intent)
-        {
-            CreateMessenger();
-            return messenger.Binder;
-        }
-
-        void CreateMessenger()
-        {
-            if (messenger == null)
-                messenger = new Messenger(default(Handler));
-        }
+            => null;
 
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
-            return StartCommandResult.Sticky;
+            Instance = this;
+            if (intent != null)
+            {
+                if (intent.HasExtra(nameof(NotificationTitle)))
+                    NotificationTitle = intent.GetStringExtra(nameof(NotificationTitle));
+                if (intent.HasExtra(nameof(NotificationText)))
+                    NotificationText = intent.GetStringExtra(nameof(NotificationText));
+                if (intent.HasExtra(nameof(NotificationChannelId)))
+                    NotificationChannelId = intent.GetStringExtra(nameof(NotificationChannelId));
+                if (intent.HasExtra(nameof(NotificationSmallIcon)))
+                    NotificationSmallIcon = intent.GetIntExtra(nameof(NotificationSmallIcon), NotificationSmallIcon);
+            }
+            return StartCommandResult.RedeliverIntent;
         }
 
-        public void SetForegroundState(bool flag, string text = "")
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                text = NotificationText;
+        public void Log(string s, [CallerMemberName] string m = null)
+            => Console.WriteLine($"[LocationListenerService] [{m}] {s}");
 
+        void SetForegroundState(bool flag)
+        {
             if (flag)
             {
                 if (IsForeground) return;
                 IsForeground = true;
 
                 var notification = new NotificationCompat.Builder(this)
-                    .Customize(ActivityType, this)
+                    .Customize(Xamarin.Essentials.Platform.CurrentActivity, this)
                     .SetContentTitle(NotificationTitle)
-                    .SetContentText(text)
+                    .SetContentText(NotificationText)
                     .SetOngoing(true)
                     .SetChannelId(NotificationChannelId)
                     .SetSmallIcon(NotificationSmallIcon)
@@ -87,39 +142,40 @@ namespace MooseDrive.Logger.Android
             }
         }
 
-        LocationListener locationListener = null;
         public void StartLocationListener()
         {
-            if (locationListener == null)
+            if (locationManager == null)
             {
-                locationListener = new LocationListener(this);
-                locationListener.OnLocation += LocationListener_OnLocation;
+                locationManager = new LocationManager(this);
+                locationManager.OnLocation += LocationListener_OnLocation;
             }
 
-            locationListener.StartLocationListener();
+            locationManager.StartLocationListener();
             OnStatusChange?.Invoke(this, true);
         }
 
         public void StopLocationListener()
         {
-            if (locationListener == null)
-                locationListener = new LocationListener(this);
+            if (locationManager == null)
+                locationManager = new LocationManager(this);
 
-            locationListener.OnLocation -= LocationListener_OnLocation;
-            locationListener.StopLocationListener();
+            locationManager.OnLocation -= LocationListener_OnLocation;
+            locationManager.StopLocationListener();
             OnStatusChange?.Invoke(this, false);
         }
 
         public override void OnCreate()
         {
             base.OnCreate();
-            CreateMessenger();
+            SetForegroundState(true);
             StartLocationListener();
         }
 
         public override void OnDestroy()
         {
+            SetForegroundState(false);
             StopLocationListener();
+            Instance = null;
             base.OnDestroy();
         }
 
