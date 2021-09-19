@@ -16,8 +16,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+[assembly: UsesPermission(global::Android.Manifest.Permission.ForegroundService)]
+[assembly: UsesPermission(global::Android.Manifest.Permission.AccessBackgroundLocation)]
+[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
+[assembly: UsesPermission(Android.Manifest.Permission.AccessCoarseLocation)]
 namespace MooseDrive.Logger.Android
 {
+    [Service]
     public class LocationListenerService : Service
     {
         LocationManager locationManager = null;
@@ -102,14 +107,18 @@ namespace MooseDrive.Logger.Android
             if (intent != null)
             {
                 if (intent.HasExtra(nameof(NotificationTitle)))
-                    NotificationTitle = intent.GetStringExtra(nameof(NotificationTitle));
+                    NotificationTitle = intent.GetStringExtra(nameof(NotificationTitle)) ?? NotificationTitle;
                 if (intent.HasExtra(nameof(NotificationText)))
-                    NotificationText = intent.GetStringExtra(nameof(NotificationText));
+                    NotificationText = intent.GetStringExtra(nameof(NotificationText)) ?? NotificationText;
                 if (intent.HasExtra(nameof(NotificationChannelId)))
-                    NotificationChannelId = intent.GetStringExtra(nameof(NotificationChannelId));
+                    NotificationChannelId = intent.GetStringExtra(nameof(NotificationChannelId)) ?? NotificationChannelId;
                 if (intent.HasExtra(nameof(NotificationSmallIcon)))
                     NotificationSmallIcon = intent.GetIntExtra(nameof(NotificationSmallIcon), NotificationSmallIcon);
             }
+
+            SetForegroundState(true);
+            StartLocationListener();
+
             return StartCommandResult.RedeliverIntent;
         }
 
@@ -162,13 +171,6 @@ namespace MooseDrive.Logger.Android
             locationManager.OnLocation -= LocationListener_OnLocation;
             locationManager.StopLocationListener();
             OnStatusChange?.Invoke(this, false);
-        }
-
-        public override void OnCreate()
-        {
-            base.OnCreate();
-            SetForegroundState(true);
-            StartLocationListener();
         }
 
         public override void OnDestroy()
