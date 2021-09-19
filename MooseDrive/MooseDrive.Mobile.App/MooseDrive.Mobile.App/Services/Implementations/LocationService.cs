@@ -1,4 +1,5 @@
-﻿using MooseDrive.Mobile.App.Services.Implementations;
+﻿using MooseDrive.Interfaces;
+using MooseDrive.Mobile.App.Services.Implementations;
 
 using System;
 using System.Collections.Generic;
@@ -13,41 +14,46 @@ namespace MooseDrive.Mobile.App.Services.Implementations
 {
     public class LocationService : ILocationService
     {
+        readonly ILocationListener locationListener;
+
         public Location LastKnown { get; private set; }
         public DateTimeOffset LastTimestamp { get; private set; }
 
         public event EventHandler<Location> OnLocation;
+
+        public LocationService()
+        {
+            locationListener = DependencyService.Get<ILocationListener>();
+            locationListener.OnPositionChange += LocationListener_OnPositionChange;
+        }
+
+        private void LocationListener_OnPositionChange(object sender, Plugin.Geolocator.Abstractions.Position e)
+        {
+            OnLocation?.Invoke(this, new Location
+            {
+                Accuracy = e.Accuracy,
+                Altitude = e.Altitude,
+                Course = e.Heading,
+                Latitude = e.Latitude,
+                Longitude = e.Longitude,
+                Speed = e.Speed,
+                Timestamp = e.Timestamp,
+                VerticalAccuracy = e.AltitudeAccuracy
+            });
+        }
 
         volatile bool isStarted = false;
         public async Task StartAsync()
         {
             if (isStarted) return;
             isStarted = true;
-            while (isStarted)
-            {
-                DateTime dt = DateTime.Now;
-                try
-                {
-                    var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
-                    var location = await Geolocation.GetLocationAsync(request);
-                    if (location != null)
-                    {
-                        LastKnown = location;
-                        LastTimestamp = DateTimeOffset.Now;
-                        OnLocation?.Invoke(this, LastKnown);
-                    }
-                }
-                catch { }
-                var opTime = (DateTime.Now - dt).TotalSeconds;
-                double delay = 2;
-                if (opTime < delay) await Task.Delay(TimeSpan.FromSeconds(delay - opTime));
-            }
+            await locationListener.StartAsync();
         }
 
-        public Task StopAsync()
+        public async Task StopAsync()
         {
+            await locationListener.StopAsync();
             isStarted = false;
-            return Task.CompletedTask;
         }
     }
 }

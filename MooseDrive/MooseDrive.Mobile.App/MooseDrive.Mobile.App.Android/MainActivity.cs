@@ -19,14 +19,16 @@ namespace MooseDrive.Mobile.App.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState); 
-            AppCenter.Start("82412a0a-a1ff-40bf-bead-49ff374688cc",
-                    typeof(Analytics), typeof(Crashes));
+            AppCenter.Start("82412a0a-a1ff-40bf-bead-49ff374688cc", typeof(Analytics), typeof(Crashes));
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
             Rg.Plugins.Popup.Popup.Init(this);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             global::Xamarin.Forms.FormsMaterial.Init(this, savedInstanceState);
             LocationListenerService.CreateNotificationChannel(this, ChannelId, "Moose Drive", NotificationImportance.High);
+            LocationListener.ChannelId = ChannelId;
+            LocationListener.SmallIcon = Resource.Drawable.ecg;
+            
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
