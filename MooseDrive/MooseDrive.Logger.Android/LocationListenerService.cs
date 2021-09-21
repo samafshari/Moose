@@ -46,19 +46,21 @@ namespace MooseDrive.Logger.Android
 
         public static void CreateNotificationChannel(Activity activity, string channelId, string name, NotificationImportance importance)
         {
-            if (IsPlayServicesAvailable(activity))
+            if (!IsPlayServicesAvailable(activity))
                 return;
 
             // No need to create a channel for APIs less than O
             if (Build.VERSION.SdkInt < BuildVersionCodes.O)
                 return;
 
+            NotificationManager notificationManager = 
+                (NotificationManager)activity.GetSystemService(NotificationService);
+
             var channel = new NotificationChannel(channelId, name, importance);
             channel.EnableLights(true);
-            channel.EnableVibration(true);
+            channel.EnableVibration(false);
+            channel.SetSound(null, null);
             channel.LockscreenVisibility = NotificationVisibility.Public;
-            NotificationManager notificationManager =
-                (NotificationManager)activity.GetSystemService(NotificationService);
             notificationManager.CreateNotificationChannel(channel);
         }
 
@@ -132,10 +134,10 @@ namespace MooseDrive.Logger.Android
                 if (IsForeground) return;
                 IsForeground = true;
 
-                var notification = new NotificationCompat.Builder(this)
+                var notification = new NotificationCompat.Builder(this, NotificationChannelId)
                     .Customize(Xamarin.Essentials.Platform.CurrentActivity, this)
                     .SetContentTitle(NotificationTitle)
-                    .SetContentText(NotificationText)
+                    .SetContentText(NotificationText) 
                     .SetOngoing(true)
                     .SetChannelId(NotificationChannelId)
                     .SetSmallIcon(NotificationSmallIcon)

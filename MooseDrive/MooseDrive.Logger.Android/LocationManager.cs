@@ -75,10 +75,10 @@ namespace MooseDrive.Logger.Android
             listener = new GeolocationContinuousListener(Manager, LocationMinTime, providers);
             listener.PositionChanged += Locator_PositionChanged;
 
-            Looper looper = Looper.MyLooper() ?? Looper.MainLooper;
+            Looper looper = Looper.MainLooper;// Looper.MyLooper() ?? Looper.MainLooper;
             for (int i = 0; i < providers.Length; ++i)
             {
-                if (providers[i] != ALocationManager.GpsProvider) continue;
+                //if (providers[i] != ALocationManager.GpsProvider) continue;
 
                 Log($"Found Provider: {providers[i]}");
 

@@ -51,7 +51,6 @@
     <Compile Include="LocationManager.cs" />
     <Compile Include="LocationListenerService.cs" />
     <Compile Include="NotificationExtensions.cs" />
-    <Compile Include="Plugins\FusedLocationGeolocatorInternal.cs" />
     <Compile Include="Plugins\GeolocationContinuousListener.cs" />
     <Compile Include="Plugins\GeolocationSingleListener.cs" />
     <Compile Include="Plugins\GeolocationUtils.cs" />

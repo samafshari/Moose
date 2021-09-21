@@ -45,6 +45,10 @@ namespace MooseDrive.Logger.Android
                 Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(() =>
                 {
                     LocationListenerService.StartService(title, text, channelId, smallIcon);
+                    LocationListenerService.OnPositionChange -= OnPositionChange;
+                    LocationListenerService.OnStatusChange -= OnStatusChange;
+                    LocationListenerService.OnPositionChange += OnPositionChange;
+                    LocationListenerService.OnStatusChange += OnStatusChange;
                 });
             }
             return Task.CompletedTask;
@@ -56,6 +60,8 @@ namespace MooseDrive.Logger.Android
             {
                 Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(() =>
                 {
+                    LocationListenerService.OnPositionChange -= OnPositionChange;
+                    LocationListenerService.OnStatusChange -= OnStatusChange;
                     LocationListenerService.Instance.StopSelf();
                 });
             }

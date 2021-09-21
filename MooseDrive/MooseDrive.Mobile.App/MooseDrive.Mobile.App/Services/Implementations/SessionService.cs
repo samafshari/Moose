@@ -40,6 +40,10 @@ namespace MooseDrive.Mobile.App.Services.Implementations
             bluetoothService.Disconnected += BluetoothService_Disconnected;
 
             locationService.OnLocation += LocationService_OnLocation;
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await locationService.StartAsync();
+            });
         }
 
         private void BluetoothService_Connected(object sender, ELMDevice e)

@@ -59,15 +59,16 @@
             <ListView
                 ItemsSource="{Binding Items}"
                 SelectionMode="None"
-                RowHeight="50">
+                RowHeight="65">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid HeightRequest="50">
+                            <Grid VerticalOptions="Center">
                                 <Label 
                                     Margin="16,0"
                                     Text="{Binding Device.Name}" 
                                     TextColor="{StaticResource Color1}" 
+                                    FontSize="{StaticResource FontSizeL}"
                                     VerticalOptions="Center" 
                                     InputTransparent="True" />
                                 <Grid.GestureRecognizers>
